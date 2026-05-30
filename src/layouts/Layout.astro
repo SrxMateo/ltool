@@ -98,15 +98,6 @@ const webTools = [
     { name: 'SVG Optimizer', id: 'svg-cleaner', href: '/web/svg-cleaner', icon: 'fa-vector-square' },
 ];
 
-const intelligenceTools = [
-    { name: 'Technical Plans', id: 'plans', href: '/intelligence/plans', icon: 'fa-diagram-project' },
-    { name: 'Master Templates', id: 'templates', href: '/intelligence/templates', icon: 'fa-paste' },
-    { name: 'Code Vault', id: 'vault-pro', href: '/intelligence/vault-pro', icon: 'fa-box-archive' },
-    { name: 'System Mapping', id: 'mapping', href: '/intelligence/mapping', icon: 'fa-network-wired' },
-    { name: 'Blueprint Gen', id: 'blueprint', href: '/intelligence/blueprint', icon: 'fa-pen-ruler' },
-    { name: 'Prompt Forge', id: 'prompts', href: '/intelligence/prompts', icon: 'fa-brain' },
-];
-
 let currentSuiteTools = generatorTools;
 let suiteName = 'Generadores';
 let suiteAccent = '#fbbf24';
@@ -137,11 +128,6 @@ if (suite === 'convertidores') {
     suiteName = 'Web Forge';
     suiteAccent = '#f87171'; // ROJO CLARO
     suiteIcon = 'fa-code';
-} else if (suite === 'intelligence') {
-    currentSuiteTools = intelligenceTools;
-    suiteName = 'Elite Intelligence';
-    suiteAccent = '#94a3b8'; // GRIS ACERO
-    suiteIcon = 'fa-microchip';
 }
 ---
 
