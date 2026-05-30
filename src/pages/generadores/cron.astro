@@ -1,0 +1,114 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Cron Architect Elite" activeTool="cron">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Cron Architect</h1>
+            <p>Unidad de planificación de tareas para sistemas Unix y Linux. Genera expresiones Crontab con precisión quirúrgica para automatizar backups, reinicios de servidor o limpiezas de logs.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona la frecuencia deseada para cada campo temporal.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema traducirá la expresión a lenguaje humano para validación visual.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Copia la cadena y pégala en tu archivo <code>crontab -e</code>.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="border-top: 5px solid var(--p-accent);">
+            <div style="background: #000; padding: 2.5rem; border-radius: 20px; border: 1px solid #222; margin-bottom: 2.5rem; text-align: center; box-shadow: inset 0 10px 30px rgba(0,0,0,0.5);">
+                <input type="text" id="CronResult" value="* * * * *" readonly style="width: 100%; background: transparent; border: none; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; font-size: 2.8rem; font-weight: 950; text-align: center; outline: none; letter-spacing: 0.1em;" />
+                <p id="CronHuman" style="color: var(--p-text-dim); margin-top: 1.2rem; font-size: 1rem; font-weight: 600;">"Ejecutar cada minuto de cada día."</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem;">
+                <div class="form-group">
+                    <label class="cron-label">Minuto</label>
+                    <select id="CronMin" class="cron-select" onchange="updateCron()">
+                        <option value="*">Todos (*)</option>
+                        <option value="0">0</option>
+                        <option value="*/5">Cada 5m</option>
+                        <option value="*/15">Cada 15m</option>
+                        <option value="*/30">Cada 30m</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="cron-label">Hora</label>
+                    <select id="CronHour" class="cron-select" onchange="updateCron()">
+                        <option value="*">Todas (*)</option>
+                        <option value="0">00:00 (Medianoche)</option>
+                        <option value="12">12:00 (Mediodía)</option>
+                        <option value="*/2">Cada 2h</option>
+                        <option value="*/6">Cada 6h</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="cron-label">Día (Mes)</label>
+                    <input type="text" id="CronDay" value="*" class="cron-select" oninput="updateCron()" />
+                </div>
+                <div class="form-group">
+                    <label class="cron-label">Mes</label>
+                    <select id="CronMonth" class="cron-select" onchange="updateCron()">
+                        <option value="*">Todos (*)</option>
+                        <option value="1">Enero</option>
+                        <option value="6">Junio</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="cron-label">Día (Semana)</label>
+                    <select id="CronWeek" class="cron-select" onchange="updateCron()">
+                        <option value="*">Todos (*)</option>
+                        <option value="1-5">Lunes a Viernes</option>
+                        <option value="0,6">Fines de semana</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="copyTo('CronResult', event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 3rem; font-size: 1rem;">
+                <i class="fa-solid fa-copy"></i> Copiar para Crontab
+            </button>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .cron-label { display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.8rem; letter-spacing: 0.1em; }
+    .cron-select { width: 100%; padding: 1rem; background: #000; border: 1px solid #333; border-radius: 10px; color: #fff; font-weight: 800; outline: none; transition: 0.3s; }
+    .cron-select:focus { border-color: var(--p-accent); }
+</style>
+
+<script is:inline>
+    function updateCron() {
+        const min = document.getElementById('CronMin').value;
+        const hour = document.getElementById('CronHour').value;
+        const day = document.getElementById('CronDay').value;
+        const month = document.getElementById('CronMonth').value;
+        const week = document.getElementById('CronWeek').value;
+
+        const res = `${min} ${hour} ${day} ${month} ${week}`;
+        document.getElementById('CronResult').value = res;
+
+        let human = "Ejecutar ";
+        if(min === "*") human += "cada minuto ";
+        else human += `en el minuto ${min} `;
+        
+        if(hour === "*") human += "de cada hora ";
+        else human += `de la hora ${hour} `;
+
+        if(day === "*" && month === "*" && week === "*") human += "todos los días.";
+        else human += "según programación específica.";
+
+        document.getElementById('CronHuman').innerText = human;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Expresión Cron copiada");
+    }
+</script>

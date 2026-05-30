@@ -1,0 +1,85 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="XSS Shield Elite" suite="ciberseguridad" activeTool="xss">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>XSS Shield & Entity Forge</h1>
+            <p>Unidad de codificación defensiva diseñada para neutralizar ataques de Cross-Site Scripting (XSS). Transforma carácteres peligrosos en entidades HTML seguras para un renderizado protegido en aplicaciones web.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Blindaje</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Sanitizar:</strong> Convierte carácteres como <code>&lt;</code>, <code>&gt;</code> y <code>&amp;</code> en entidades seguras.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Restaurar:</strong> Traduce entidades HTML de vuelta a su forma original para edición.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Utiliza esta herramienta antes de guardar datos de usuarios en tu base de datos.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <div class="card" style="border-top: 4px solid var(--p-accent);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Código Vulnerable (Input)</label>
+                    <button onclick="copyVal('RawInput', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="RawInput" placeholder='<script>alert("XSS")</script>' style="width: 100%; height: 300px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.95rem; line-height: 1.6; resize: none;"></textarea>
+                <button onclick="sanitize(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 2rem;">
+                    Sanitizar Código <i class="fa-solid fa-shield-virus"></i>
+                </button>
+            </div>
+
+            <div class="card" style="border-top: 4px solid #fff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Código Protegido (Output)</label>
+                    <button onclick="copyVal('SafeOutput', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="SafeOutput" placeholder="&lt;script&gt;..." style="width: 100%; height: 300px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.95rem; line-height: 1.6; resize: none;"></textarea>
+                <button onclick="un-sanitize(event.currentTarget)" class="btn-elite" style="width: 100%; margin-top: 2rem; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333;">
+                    <i class="fa-solid fa-unlock"></i> Restaurar Original
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function sanitize(btn) {
+        const input = document.getElementById('RawInput').value;
+        if(!input) return;
+        
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        
+        const result = input.replace(/[&<>"']/g, function(m) { return map[m]; });
+        document.getElementById('SafeOutput').value = result;
+        
+        if(btn) animateBtn(btn);
+        showToast("Código blindado con éxito");
+    }
+
+    function unsanitize(btn) {
+        const input = document.getElementById('SafeOutput').value;
+        if(!input) return;
+        
+        const doc = new DOMParser().parseFromString(input, 'text/html');
+        document.getElementById('RawInput').value = doc.documentElement.textContent;
+        
+        if(btn) animateBtn(btn);
+        showToast("Código restaurado");
+    }
+
+    function copyVal(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Copiado al portapapeles");
+    }
+</script>

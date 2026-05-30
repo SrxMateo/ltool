@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Bandwidth Calc Elite" suite="network" activeTool="bandwidth">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Bandwidth & Speed Converter</h1>
+            <p>Unidad de conversión de velocidad de transferencia. Transforma valores entre Megabits por segundo (Mbps), Megabytes por segundo (MB/s) y otros estándares de ancho de banda industrial.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Conversión</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong> Mbps:</strong> Es la unidad común de los proveedores de Internet.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong> MB/s:</strong> Es la velocidad real de descarga que ves en tu navegador.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Recuerda: 8 Megabits (Mb) equivalen exactamente a 1 Megabyte (MB).</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="unit-group">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase; margin-bottom: 1rem;">Mbps (Megabits)</label>
+                    <input type="number" id="val-mbps" oninput="convSpeed('mbps', this.value)" placeholder="0" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1rem; color: #fff; font-weight: 800; font-size: 1.5rem; outline: none;" />
+                </div>
+                <div class="unit-group">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 900; color: #fff; text-transform: uppercase; margin-bottom: 1rem;">MB/s (Megabytes)</label>
+                    <input type="number" id="val-mbs" oninput="convSpeed('mbs', this.value)" placeholder="0" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1rem; color: var(--p-accent); font-weight: 800; font-size: 1.5rem; outline: none;" />
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 3rem; background: rgba(0,0,0,0.3); border-color: #222; text-align: center;">
+                <h4 style="font-size: 0.7rem; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Tiempo de descarga estimado (1 GB)</h4>
+                <p id="download-eta" style="font-size: 2rem; font-weight: 950; color: #fff;">-</p>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function convSpeed(type, val) {
+        if(!val) return;
+        const num = parseFloat(val);
+        const mbps = type === 'mbps' ? num : num * 8;
+        const mbs = type === 'mbs' ? num : num / 8;
+
+        if(type !== 'mbps') document.getElementById('val-mbps').value = mbps.toFixed(2);
+        if(type !== 'mbs') document.getElementById('val-mbs').value = mbs.toFixed(2);
+
+        // ETA for 1GB (1024MB)
+        const seconds = 1024 / mbs;
+        const minutes = Math.floor(seconds / 60);
+        const remSeconds = Math.floor(seconds % 60);
+        document.getElementById('download-eta').innerText = `${minutes}m ${remSeconds}s`;
+    }
+</script>

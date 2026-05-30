@@ -1,0 +1,75 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Whois Lookup Elite" suite="network" activeTool="whois">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Whois Domain Lookup & Ownership Analyzer</h1>
+            <p>Unidad de consulta de propiedad de dominios. Accede a la información pública de registro de cualquier dominio web para verificar fechas de expiración, servidores de nombres y contacto técnico.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Inteligencia de Dominio</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa el dominio raíz (ej: lumax.lat).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema consultará los servidores WHOIS globales.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para auditorías de marca y prevención de caducidad de dominios.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.2rem; letter-spacing: 0.1em;">Dominio a Investigar</label>
+                <input type="text" id="whois-input" placeholder="ej: google.com o lumax.lat" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.2rem; color: #fff; font-weight: 800; outline: none; font-size: 1.2rem; text-align: center;" />
+            </div>
+
+            <button onclick="checkWhois(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Consultar Datos WHOIS <i class="fa-solid fa-fingerprint"></i>
+            </button>
+            
+            <div id="whois-results" style="margin-top: 4rem; display: none; text-align: left;">
+                <div class="card" style="padding: 2rem; background: #000; border: 1px solid #222;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <span style="font-weight: 950; color: var(--p-accent); font-size: 0.8rem;">REGISTRATION DATA</span>
+                        <button onclick="copyTo('whois-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                    <textarea id="whois-output" readonly style="width: 100%; height: 350px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; outline: none; resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function checkWhois(btn) {
+        const domain = document.getElementById('whois-input').value.trim();
+        if(!domain) return;
+
+        const output = document.getElementById('whois-output');
+        const resBox = document.getElementById('whois-results');
+        
+        output.value = "Conectando con bases de datos WHOIS...";
+        resBox.style.display = 'block';
+
+        try {
+            // API pública de consulta WHOIS
+            const res = await fetch(`https://rdap.org/domain/${domain}`);
+            const data = await res.json();
+            
+            output.value = JSON.stringify(data, null, 4);
+            if(btn) animateBtn(btn);
+            showToast("Información WHOIS obtenida");
+        } catch (e) {
+            output.value = "ERROR: No se pudo obtener información para este dominio o el servidor RDAP no responde.";
+        }
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Copiado al portapapeles");
+    }
+</script>

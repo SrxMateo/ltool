@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Plugin.yml Generator" suite="plugins" activeTool="yml">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Minecraft Plugin.yml Generator</h1>
+            <p>Unidad de arquitectura para el manifiesto de plugins Spigot/Paper. Genera el archivo fundamental <code>plugin.yml</code> con comandos, permisos y metadatos técnicos de forma rápida y sin errores de indentación.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Arquitectura</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el nombre único y la clase principal de tu plugin.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Añade los comandos principales y sus descripciones.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Descarga o copia el archivo resultante para incluirlo en tu proyecto Java.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem;">
+            <div class="card">
+                <h3 style="color:#fff; margin-bottom:1.5rem; font-size:1.1rem;">Configuración Básica</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Nombre del Plugin</label>
+                    <input type="text" id="yml-name" oninput="genYml()" value="MiPluginElite" class="p-input" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Main Class (Ruta)</label>
+                    <input type="text" id="yml-main" oninput="genYml()" value="com.lumax.plugin.Main" class="p-input" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Versión</label>
+                    <input type="text" id="yml-ver" oninput="genYml()" value="1.0.0" class="p-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="p-label">API Version</label>
+                    <select id="yml-api" onchange="genYml()" class="p-select" style="width: 100%;">
+                        <option value="1.21">1.21</option>
+                        <option value="1.20">1.20</option>
+                        <option value="1.19">1.19</option>
+                        <option value="1.13">1.13 (Legacy)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Manifiesto plugin.yml</label>
+                    <button onclick="copyTo('yml-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="yml-output" readonly style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .p-label { display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.6rem; letter-spacing: 0.1em; }
+    .p-input { width: 100%; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #fff; font-weight: 800; outline: none; }
+    .p-select { background: #111; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+</style>
+
+<script is:inline>
+    function genYml() {
+        const name = document.getElementById('yml-name').value;
+        const main = document.getElementById('yml-main').value;
+        const ver = document.getElementById('yml-ver').value;
+        const api = document.getElementById('yml-api').value;
+
+        let res = `name: ${name}\n`;
+        res += `version: ${ver}\n`;
+        res += `main: ${main}\n`;
+        res += `api-version: '${api}'\n`;
+        res += `author: SrxMateo & LumaXCorp\n\n`;
+        res += `commands:\n  admin:\n    description: Comando de administración elite.\n    permission: ${name.toLowerCase()}.admin`;
+
+        document.getElementById('yml-output').value = res;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Manifiesto YAML copiado");
+    }
+
+    // Init
+    genYml();
+</script>

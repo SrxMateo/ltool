@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Packet Analyzer Elite" suite="plugins" activeTool="packets">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>Protocol & Packet Analyzer</h1>
+            <p>Unidad de investigación para el protocolo de red de Minecraft. Identifica la estructura de los paquetes (Packets) utilizados para la comunicación entre el cliente y el servidor, facilitando el desarrollo de plugins que usan ProtocolLib.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Protocolo</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona el estado de la conexión (Handshaking, Play, Status).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema mostrará la lista de paquetes conocidos y su ID técnico.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para depurar problemas de lag o crear efectos visuales avanzados.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label class="p-label">Estado del Protocolo</label>
+                <select id="packet-select" onchange="updatePackets()" class="p-select" style="width: 100%;">
+                    <option value="play-in">Play (Client to Server)</option>
+                    <option value="play-out">Play (Server to Client)</option>
+                    <option value="handshake">Handshaking</option>
+                </select>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Estructura de Paquetes</label>
+                    <button onclick="copyTo('packet-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="packet-output" readonly style="width: 100%; height: 300px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    const packets = {
+        'play-in': `0x00: PacketPlayInTeleportAccept\n0x03: PacketPlayInChat\n0x05: PacketPlayInClientCommand\n0x0A: PacketPlayInFly\n0x0B: PacketPlayInPosition`,
+        'play-out': `0x00: PacketPlayOutSpawnEntity\n0x03: PacketPlayOutChat\n0x05: PacketPlayOutAnimation\n0x1A: PacketPlayOutNamedSoundEffect\n0x24: PacketPlayOutPosition`,
+        'handshake': `0x00: PacketHandshakingInSetProtocol\n0x00: PacketHandshakingOutResponse`
+    };
+
+    function updatePackets() {
+        const val = document.getElementById('packet-select').value;
+        document.getElementById('packet-output').value = packets[val];
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Lista de paquetes copiada");
+    }
+
+    updatePackets();
+</script>

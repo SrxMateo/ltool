@@ -1,0 +1,79 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Base64 Forge Elite" activeTool="base64">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Base64 Forge Engine</h1>
+            <p>Unidad de transformación bidireccional para codificar y decodificar datos en formato Base64. Utilizado ampliamente en el transporte de datos binarios a través de protocolos que solo aceptan texto, como URLs o JSON.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Codificar:</strong> Convierte texto plano a una cadena Base64 segura para transporte.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Decodificar:</strong> Traduce una cadena Base64 de vuelta a su texto original legible.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Soporta carácteres especiales mediante codificación UTF-8 interna.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <div class="card" style="border-top: 4px solid var(--p-accent);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Texto Plano (Input)</label>
+                    <button onclick="copyVal('PlainInput', event.currentTarget)" style="background: none; border: none; color: var(--p-text-dim); cursor: pointer; transition: 0.3s;"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="PlainInput" placeholder="Escribe o pega tu texto aquí..." style="width: 100%; height: 300px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.95rem; line-height: 1.6; resize: none;"></textarea>
+                <button onclick="encodeBase64(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 2rem;">
+                    Codificar a Base64 <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="card" style="border-top: 4px solid #fff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Cadena Base64 (Output)</label>
+                    <button onclick="copyVal('Base64Output', event.currentTarget)" style="background: none; border: none; color: var(--p-accent); cursor: pointer; transition: 0.3s;"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="Base64Output" placeholder="Resultado codificado..." style="width: 100%; height: 300px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.95rem; line-height: 1.6; resize: none;"></textarea>
+                <button onclick="decodeBase64(event.currentTarget)" class="btn-elite" style="width: 100%; margin-top: 2rem; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333;">
+                    <i class="fa-solid fa-chevron-left"></i> Decodificar a Texto
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function encodeBase64(btn) {
+        const input = document.getElementById('PlainInput').value;
+        if(!input) return;
+        try {
+            document.getElementById('Base64Output').value = btoa(unescape(encodeURIComponent(input)));
+            if(btn) animateBtn(btn);
+            showToast("Codificación completada");
+        } catch (e) {
+            showToast("Error de codificación");
+        }
+    }
+
+    function decodeBase64(btn) {
+        const input = document.getElementById('Base64Output').value;
+        if(!input) return;
+        try {
+            document.getElementById('PlainInput').value = decodeURIComponent(escape(atob(input)));
+            if(btn) animateBtn(btn);
+            showToast("Decodificación completada");
+        } catch (e) {
+            showToast("Error: Formato Base64 inválido");
+        }
+    }
+
+    function copyVal(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Contenido copiado");
+    }
+</script>

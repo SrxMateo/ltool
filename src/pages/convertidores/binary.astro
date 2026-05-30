@@ -1,0 +1,106 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Binary Forge Elite" suite="convertidores" activeTool="binary">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Binary Forge & Base Converter</h1>
+            <p>Unidad de procesamiento numérico para convertir entre Decimal, Binario, Hexadecimal y Octal. Herramienta fundamental para el análisis de memoria, protocolos de red y direccionamiento IP.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Escribe el valor en cualquier casilla de la unidad.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema realizará la conversión síncrona a todas las demás bases.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Soporta valores de hasta 64 bits para cálculos de precisión.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- DECIMAL -->
+                <div class="input-group-elite">
+                    <label>DECIMAL (Base 10)</label>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="number" id="valDec" oninput="convert('dec', this.value)" placeholder="ej: 255" />
+                        <button onclick="copyTo('valDec', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- BINARIO -->
+                <div class="input-group-elite">
+                    <label>BINARIO (Base 2)</label>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="text" id="valBin" oninput="convert('bin', this.value)" placeholder="ej: 11111111" />
+                        <button onclick="copyTo('valBin', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- HEXADECIMAL -->
+                <div class="input-group-elite">
+                    <label>HEXADECIMAL (Base 16)</label>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="text" id="valHex" oninput="convert('hex', this.value)" placeholder="ej: FF" style="text-transform: uppercase;" />
+                        <button onclick="copyTo('valHex', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- OCTAL -->
+                <div class="input-group-elite">
+                    <label>OCTAL (Base 8)</label>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="number" id="valOct" oninput="convert('oct', this.value)" placeholder="ej: 377" />
+                        <button onclick="copyTo('valOct', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .input-group-elite { background: rgba(0,0,0,0.3); padding: 1.5rem 2rem; border-radius: 20px; border: 1px solid #222; transition: 0.3s; }
+    .input-group-elite:focus-within { border-color: var(--p-accent); box-shadow: 0 0 30px var(--p-accent-glow); }
+    .input-group-elite label { display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-accent); letter-spacing: 0.1em; margin-bottom: 0.8rem; text-transform: uppercase; }
+    .input-group-elite input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; outline: none; width: 100%; }
+    .btn-copy-mini { background: var(--p-accent-glow); border: 1px solid rgba(34, 211, 238, 0.2); color: var(--p-accent); padding: 10px 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+    .btn-copy-mini:hover { transform: scale(1.1); background: var(--p-accent); color: #000; }
+</style>
+
+<script is:inline>
+    function convert(source, val) {
+        if(!val) {
+            clearAll();
+            return;
+        }
+
+        let decimal;
+        try {
+            if (source === 'dec') decimal = parseInt(val, 10);
+            if (source === 'bin') decimal = parseInt(val, 2);
+            if (source === 'hex') decimal = parseInt(val, 16);
+            if (source === 'oct') decimal = parseInt(val, 8);
+
+            if (isNaN(decimal)) return;
+
+            if (source !== 'dec') document.getElementById('valDec').value = decimal;
+            if (source !== 'bin') document.getElementById('valBin').value = decimal.toString(2);
+            if (source !== 'hex') document.getElementById('valHex').value = decimal.toString(16).toUpperCase();
+            if (source !== 'oct') document.getElementById('valOct').value = decimal.toString(8);
+        } catch (e) {}
+    }
+
+    function clearAll() {
+        ['valDec', 'valBin', 'valHex', 'valOct'].forEach(id => document.getElementById(id).value = "");
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Valor copiado al portapapeles");
+    }
+</script>

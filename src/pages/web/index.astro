@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const toolStats = [
+    { name: 'HTML Boilerplate', desc: 'Generador instantáneo de plantillas HTML5 optimizadas.', icon: 'fa-html5', href: '/web/html-gen' },
+    { name: 'Flexbox Forge', desc: 'Simulador visual para layouts Flexbox modernos.', icon: 'fa-box', href: '/web/css-flex' },
+    { name: 'Grid Architect', desc: 'Diseñador de rejillas CSS Grid industriales.', icon: 'fa-table-cells', href: '/web/css-grid' },
+    { name: 'JS Snippet Hub', desc: 'Colección de funciones JavaScript de alta frecuencia.', icon: 'fa-js', href: '/web/js-snippets' },
+    { name: 'Meta Tag Pro', desc: 'Generador de etiquetas SEO para indexación en Google.', icon: 'fa-search', href: '/web/meta-gen' },
+    { name: 'Favicon Hub', desc: 'Maquetador de iconos para navegadores y móviles.', icon: 'fa-icons', href: '/web/favicon-gen' },
+    { name: 'Color Shades', desc: 'Escalador de tonos cromáticos para diseño UI.', icon: 'fa-palette', href: '/web/shades-gen' },
+    { name: 'Tailwind Gen', desc: 'Generador básico de configuraciones Tailwind CSS.', icon: 'fa-wind', href: '/web/tailwind-gen' },
+    { name: 'Viewport Calc', desc: 'Información técnica y cálculos de resolución de pantalla.', icon: 'fa-mobile-screen', href: '/web/viewport-calc' },
+    { name: 'Manifest Hub', id: 'manifest-gen', href: '/web/manifest-gen', icon: 'fa-file-lines', desc: 'Generador de manifest.json para aplicaciones PWA.' },
+    { name: 'Font Mapper', id: 'font-mapper', href: '/web/font-mapper', icon: 'fa-font', desc: 'Mapa de referencia para iconos y tipografías web.' },
+    { name: 'SVG Optimizer', id: 'svg-cleaner', href: '/web/svg-cleaner', icon: 'fa-vector-square', desc: 'Limpiador y optimizador de código SVG local.' },
+];
+---
+
+<Layout title="Dashboard Web Forge" suite="web" activeTool="dashboard">
+    <div class="fade-in">
+        <header style="margin-bottom: 4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -0.04em; margin-bottom: 0.75rem;">
+                        Suite <span style="color: var(--p-accent);">Web Forge</span>
+                    </h1>
+                    <p style="color: var(--p-text-dim); font-size: 1.2rem; max-width: 700px;">
+                        Unidad de ingeniería para el desarrollo frontend moderno. Dispones de <span style="color: #fff; font-weight: 800;">{toolStats.length} herramientas</span> activas para forjar interfaces web de élite.
+                    </p>
+                </div>
+                <a href="/" class="btn-elite" style="background: rgba(255,255,255,0.05); color: #fff; font-size: 0.8rem; border: 1px solid var(--p-border);">
+                    <i class="fa-solid fa-arrow-left"></i> Hub Principal
+                </a>
+            </div>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            {toolStats.map(tool => (
+                <a href={tool.href} style="text-decoration: none;">
+                    <div class="card" style="border-bottom: 2px solid var(--p-accent); height: 100%;">
+                        <div style={`width: 45px; height: 45px; background: var(--p-accent-glow); color: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1.5rem;`}>
+                            <i class={`fa-brands ${tool.icon.startsWith('fa-') ? tool.icon : 'fa-solid ' + tool.icon}`}></i>
+                        </div>
+                        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">{tool.name}</h3>
+                        <p style="color: var(--p-text-dim); font-size: 0.9rem; line-height: 1.5;">{tool.desc}</p>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </div>
+</Layout>

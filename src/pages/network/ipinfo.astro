@@ -1,0 +1,75 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="IP Info Pro Elite" suite="network" activeTool="ipinfo">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>IP Intelligence & Network Metadata</h1>
+            <p>Unidad avanzada de análisis de direcciones IP. Obtén información técnica profunda sobre cualquier nodo de red, incluyendo ASN (Autonomous System Number), geolocalización precisa y datos de enrutamiento.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Inteligencia</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa la IP que deseas investigar.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema realizará una traza de metadatos completa.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para identificar redes de bots, VPNs o proveedores de hosting.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.2rem; letter-spacing: 0.1em;">Objetivo (Target IP)</label>
+                <input type="text" id="info-ip" placeholder="ej: 1.1.1.1" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.2rem; color: #fff; font-weight: 800; outline: none; font-size: 1.3rem; text-align: center; font-family: 'JetBrains Mono', monospace;" />
+            </div>
+
+            <button onclick="getIpInfo(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Obtener Inteligencia de Red <i class="fa-solid fa-satellite-dish"></i>
+            </button>
+            
+            <div id="info-results" style="margin-top: 4rem; display: none; text-align: left;">
+                <div class="card" style="padding: 2rem; background: #000; border: 1px solid #222;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <span style="font-weight: 950; color: var(--p-accent); font-size: 0.8rem;">NETWORK METADATA ENGINE</span>
+                        <button onclick="copyTo('info-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                    <textarea id="info-output" readonly style="width: 100%; height: 350px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 1.6; outline: none; resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function getIpInfo(btn) {
+        const ip = document.getElementById('info-ip').value.trim();
+        if(!ip) return;
+
+        const output = document.getElementById('info-output');
+        const resBox = document.getElementById('info-results');
+        
+        output.value = "Consultando redes globales...";
+        resBox.style.display = 'block';
+
+        try {
+            // API pública de IP Info
+            const res = await fetch(`https://ipapi.co/${ip}/json/`);
+            const data = await res.json();
+            
+            output.value = JSON.stringify(data, null, 4);
+            if(btn) animateBtn(btn);
+            showToast("Metadatos de red cargados");
+        } catch (e) {
+            output.value = "ERROR: No se pudo conectar con el motor de inteligencia de red.";
+        }
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Información copiada");
+    }
+</script>

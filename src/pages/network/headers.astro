@@ -1,0 +1,77 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Headers Pro Elite" suite="network" activeTool="headers">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>HTTP Headers Analyzer Pro</h1>
+            <p>Unidad de inspección de respuestas de servidor. Analiza las cabeceras HTTP de cualquier sitio web para verificar políticas de seguridad, tipos de servidor y configuraciones de caché.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Inspección Web</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa la URL completa con protocolo (ej: https://lumax.lat).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema realizará una petición HEAD para obtener los metadatos.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Revisa cabeceras críticas como CSP, HSTS y Server para auditorías.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.2rem; letter-spacing: 0.1em;">URL a Analizar</label>
+                <input type="text" id="header-url" value="https://" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.2rem; color: #fff; font-weight: 700; outline: none; font-size: 1.1rem; text-align: center;" />
+            </div>
+
+            <button onclick="fetchHeaders(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Capturar Cabeceras HTTP <i class="fa-solid fa-envelope-open-text"></i>
+            </button>
+            
+            <div id="header-results" style="margin-top: 4rem; display: none; text-align: left;">
+                <div class="card" style="padding: 2rem; background: #000; border: 1px solid #222;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <span style="font-weight: 950; color: var(--p-accent); font-size: 0.8rem;">SERVER RESPONSE HEADERS</span>
+                        <button onclick="copyTo('header-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                    <textarea id="header-output" readonly style="width: 100%; height: 350px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 1.6; outline: none; resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function fetchHeaders(btn) {
+        const url = document.getElementById('header-url').value.trim();
+        if(!url || url === "https://") return;
+
+        const output = document.getElementById('header-output');
+        const resBox = document.getElementById('header-results');
+        
+        output.value = "Conectando con el servidor remoto...";
+        resBox.style.display = 'block';
+
+        try {
+            const res = await fetch(url, { method: 'HEAD' });
+            let headText = "";
+            res.headers.forEach((v, k) => {
+                headText += `${k.toUpperCase()}: ${v}\n`;
+            });
+            
+            output.value = headText || "Petición exitosa, pero el servidor no devolvió cabeceras públicas.";
+            if(btn) animateBtn(btn);
+            showToast("Cabeceras capturadas");
+        } catch (e) {
+            output.value = "ERROR: No se pudo realizar la petición. El servidor remoto podría estar bloqueando peticiones automatizadas (CORS).";
+        }
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Copiado al portapapeles");
+    }
+</script>

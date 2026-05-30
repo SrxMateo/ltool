@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Tailwind Config Builder Elite" suite="web" activeTool="tailwind-gen">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Tailwind CSS Config Builder</h1>
+            <p>Unidad de configuración para el motor Tailwind CSS. Genera el archivo <code>tailwind.config.js</code> con extensiones de tema personalizadas, fuentes de marca y paletas de colores técnicos.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Configuración</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el prefijo de tus clases si es necesario.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Añade los colores primarios y secundarios de tu identidad visual.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Copia el objeto JSON resultante para inicializar tu proyecto Tailwind.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2.5rem;">
+            <div class="card">
+                <h3 style="color:#fff; margin-bottom:1.5rem; font-size:1.1rem;">Ajustes de Tema</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Color Primario (Elite)</label>
+                    <input type="text" id="tw-primary" oninput="genTW()" value="#f87171" class="p-input" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Fuente Principal</label>
+                    <input type="text" id="tw-font" oninput="genTW()" value="'Plus Jakarta Sans', sans-serif" class="p-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="custom-check">
+                        <input type="checkbox" id="tw-dark" checked onchange="genTW()" /> Soporte Dark Mode (class)
+                    </label>
+                </div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">tailwind.config.js</label>
+                    <button onclick="copyTo('tw-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="tw-output" readonly style="width: 100%; height: 350px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genTW() {
+        const primary = document.getElementById('tw-primary').value;
+        const font = document.getElementById('tw-font').value;
+        const dark = document.getElementById('tw-dark').checked;
+
+        let res = `/** @type {import('tailwindcss').Config} */\nmodule.exports = {\n  content: ["./src/**/*.{html,js,astro,tsx}"],\n`;
+        if(dark) res += `  darkMode: 'class',\n`;
+        res += `  theme: {\n    extend: {\n      colors: {\n        primary: '${primary}',\n      },\n      fontFamily: {\n        sans: [${font}],\n      }\n    },\n  },\n  plugins: [],\n}`;
+
+        document.getElementById('tw-output').value = res;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Configuración Tailwind copiada");
+    }
+
+    genTW();
+</script>

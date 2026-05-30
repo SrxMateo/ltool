@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Favicon Hub Elite" suite="web" activeTool="favicon-gen">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Favicon Hub & Web Icon Pack</h1>
+            <p>Unidad de generación de enlaces para iconos de sitio. Configura correctamente las rutas para los iconos de pestaña (Favicon), iconos de Apple (Touch Icons) y accesos directos de Android para una experiencia de marca consistente.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Identidad</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Asegúrate de tener los archivos <code>favicon.ico</code> y <code>apple-touch-icon.png</code> en tu carpeta pública.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará las etiquetas <code>&lt;link&gt;</code> necesarias con los tamaños estándar.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Pega este código dentro del bloque <code>&lt;head&gt;</code> de tu HTML.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2.5rem;">
+                <label class="p-label">Formato de Iconos</label>
+                <select id="favicon-type" onchange="genFavicon()" class="p-select" style="width: 100%;">
+                    <option value="modern">Estándar Moderno (ICO + PNG)</option>
+                    <option value="apple">Apple Touch (iOS)</option>
+                    <option value="pwa">PWA (Android / Manifest)</option>
+                </select>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Código de Iconos</label>
+                    <button onclick="copyTo('favicon-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="favicon-output" readonly style="width: 100%; height: 250px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genFavicon() {
+        const type = document.getElementById('favicon-type').value;
+        let res = "";
+
+        if(type === 'modern') {
+            res = `<link rel="icon" type="image/x-icon" href="/favicon.ico">\n<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">\n<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">`;
+        } else if(type === 'apple') {
+            res = `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">`;
+        } else if(type === 'pwa') {
+            res = `<link rel="manifest" href="/site.webmanifest">\n<meta name="theme-color" content="#ffffff">`;
+        }
+
+        document.getElementById('favicon-output').value = res;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Código de iconos copiado");
+    }
+
+    genFavicon();
+</script>

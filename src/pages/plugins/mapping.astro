@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Custom Model Data Mapper" suite="plugins" activeTool="mapping">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>Custom Model Data Mapper</h1>
+            <p>Unidad de organización para texturas personalizadas. Gestiona el mapeo entre IDs de <code>CustomModelData</code> y archivos JSON de modelos para asegurar una integración fluida en tus Resource Packs profesionales.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Mapeo</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el item base (ej: DIAMOND_SWORD).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Asigna un ID numérico único y el nombre del modelo JSON.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará el bloque de código que debes poner en el archivo de predicados del item.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: 1fr 100px; gap: 1rem; margin-bottom: 2rem;">
+                <input type="text" id="map-name" placeholder="nombre_del_modelo" style="background: #000; border: 1px solid #333; border-radius: 12px; padding: 1rem; color: #fff; font-weight: 800;" />
+                <input type="number" id="map-id" placeholder="ID" style="background: #000; border: 1px solid #333; border-radius: 12px; padding: 1rem; color: var(--p-accent); font-weight: 900; text-align: center;" />
+            </div>
+
+            <button onclick="addMapping(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Generar Predicado de Modelo <i class="fa-solid fa-map-location-dot"></i>
+            </button>
+            
+            <div class="card" style="margin-top: 3rem; border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Resultado JSON</label>
+                    <button onclick="copyTo('map-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="map-output" readonly style="width: 100%; height: 200px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function addMapping(btn) {
+        const name = document.getElementById('map-name').value.trim();
+        const id = document.getElementById('map-id').value.trim();
+        
+        if(!name || !id) return;
+
+        const res = `{\n  "predicate": { "custom_model_data": ${id} },\n  "model": "item/custom/${name}"\n}`;
+        document.getElementById('map-output').value = res;
+        
+        if(btn) animateBtn(btn);
+        showToast("Mapeo generado");
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Código copiado");
+    }
+</script>

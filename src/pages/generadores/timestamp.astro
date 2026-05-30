@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Timestamp Converter Elite" activeTool="time">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Timestamp Converter</h1>
+            <p>Unidad de cronometría de datos para convertir entre el formato Unix Epoch (segundos desde 1970) y fechas humanas legibles. Esencial para debugging de bases de datos y registros de servidores.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa un timestamp de 10 dígitos para obtener la fecha exacta.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> También puedes usar el botón "Ahora" para obtener el tiempo real del sistema.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Soporta conversión inversa (de fecha a timestamp).</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="card">
+                <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Unix Timestamp (Input)</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                    <input type="number" id="TsInput" placeholder="1716990000" style="flex: 1; background: #000; border: 1px solid #333; border-radius: 8px; padding: 1rem; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; outline: none;" />
+                    <button onclick="setNow(event.currentTarget)" class="btn-elite" style="background: #333; color: #fff;">AHORA</button>
+                </div>
+                <button onclick="toHuman(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                    Convertir a Fecha Humana <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Fecha Resultante (Output)</label>
+                    <button onclick="copyTo('HumanOutput', event.currentTarget)" style="background: none; border: none; color: var(--p-accent); cursor: pointer;"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="HumanOutput" readonly style="width: 100%; height: 120px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; font-size: 1rem; outline: none; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function setNow(btn) {
+        document.getElementById('TsInput').value = Math.floor(Date.now() / 1000);
+        toHuman(btn);
+    }
+
+    function toHuman(btn) {
+        const ts = document.getElementById('TsInput').value;
+        if (!ts) return;
+        try {
+            const date = new Date(ts * 1000);
+            document.getElementById('HumanOutput').value = date.toLocaleString('es-ES', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' 
+            });
+            if(btn) animateBtn(btn);
+            showToast("Fecha convertida");
+        } catch (e) {
+            showToast("Timestamp inválido");
+        }
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Fecha copiada");
+    }
+
+    // Init
+    setNow();
+</script>

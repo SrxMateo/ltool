@@ -1,0 +1,84 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Visual Traceroute Elite" suite="network" activeTool="traceroute">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Visual Traceroute Simulator</h1>
+            <p>Unidad de simulación de saltos de red. Visualiza el recorrido de los paquetes de datos desde tu ubicación hasta el servidor de destino, identificando latencias en cada nodo intermedio.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Seguimiento</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa el host de destino para iniciar la traza.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema simulará los saltos a través de diferentes redes troncales.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Detecta dónde se producen los cuellos de botella en la conexión.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2.5rem;">
+                <input type="text" id="trace-host" placeholder="ej: google.com" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.2rem; color: #fff; font-weight: 800; outline: none; font-size: 1.2rem; text-align: center;" />
+            </div>
+
+            <button onclick="startTrace(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Iniciar Trazado de Red <i class="fa-solid fa-route"></i>
+            </button>
+            
+            <div id="trace-results" style="margin-top: 4rem; display: none;">
+                <div id="hops-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Hops generated via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function startTrace(btn) {
+        const host = document.getElementById('trace-host').value.trim();
+        if(!host) return;
+
+        const container = document.getElementById('hops-container');
+        const results = document.getElementById('trace-results');
+        
+        container.innerHTML = "";
+        results.style.display = 'block';
+        if(btn) animateBtn(btn);
+        showToast("Iniciando traceroute...");
+
+        const hops = [
+            { ip: '192.168.1.1', name: 'Gateway Local', ms: '1ms' },
+            { ip: '10.0.0.1', name: 'ISP Backbone', ms: '12ms' },
+            { ip: '172.16.0.4', name: 'Regional Hub', ms: '24ms' },
+            { ip: '8.8.8.8', name: 'Cloud Provider', ms: '45ms' }
+        ];
+
+        hops.forEach((h, i) => {
+            setTimeout(() => {
+                const hopEl = document.createElement('div');
+                hopEl.className = 'card';
+                hopEl.style.padding = '1rem 1.5rem';
+                hopEl.style.background = 'rgba(0,0,0,0.3)';
+                hopEl.style.display = 'flex';
+                hopEl.style.justifyContent = 'space-between';
+                hopEl.style.alignItems = 'center';
+                hopEl.style.borderLeft = `4px solid var(--p-accent)`;
+                hopEl.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <span style="font-weight:900; color:var(--p-accent);">#${i+1}</span>
+                        <div>
+                            <p style="color:#fff; font-weight:800; font-size:0.9rem;">${h.ip}</p>
+                            <p style="color:var(--p-text-dim); font-size:0.7rem; text-transform:uppercase;">${h.name}</p>
+                        </div>
+                    </div>
+                    <span style="font-family:monospace; color:#22c55e; font-weight:900;">${h.ms}</span>
+                `;
+                container.appendChild(hopEl);
+                if(i === hops.length - 1) showToast("Traza completada");
+            }, i * 800);
+        });
+    }
+</script>

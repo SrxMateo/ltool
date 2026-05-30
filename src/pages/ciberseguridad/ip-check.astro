@@ -1,0 +1,93 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="IP Reputation Elite" suite="ciberseguridad" activeTool="ip-check">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #4ade80;">
+            <h1>IP Reputation & Geolocation</h1>
+            <p>Unidad de telemetría para el análisis de direcciones IP. Obtén información geográfica, proveedor de servicios (ISP) y verifica la reputación técnica de cualquier nodo en la red.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Inteligencia</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa una IPv4 o IPv6 válida en el campo de búsqueda.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema consultará bases de datos de geolocalización en tiempo real.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Útil para identificar procedencia de ataques o configurar firewalls.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Dirección IP (v4/v6)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="ip-input" placeholder="ej: 8.8.8.8" style="flex: 1; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.2rem; color: #fff; font-weight: 700; text-align: center; outline: none; font-size: 1.2rem;" />
+                    <button onclick="getMyIP()" class="btn-elite" style="background: #222; color: #fff;" title="Mi IP actual"><i class="fa-solid fa-location-crosshairs"></i></button>
+                </div>
+            </div>
+
+            <button onclick="checkIP(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; background: #4ade80;">
+                Analizar Reputación <i class="fa-solid fa-mask"></i>
+            </button>
+            
+            <div id="ip-results" style="margin-top: 3rem; display: none; text-align: left;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.3);">
+                        <label style="font-size: 0.65rem; color: #4ade80; font-weight: 900; text-transform: uppercase;">Ubicación</label>
+                        <p id="res-loc" style="color: #fff; font-weight: 700; margin-top: 5px;">-</p>
+                    </div>
+                    <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.3);">
+                        <label style="font-size: 0.65rem; color: #4ade80; font-weight: 900; text-transform: uppercase;">Proveedor (ISP)</label>
+                        <p id="res-isp" style="color: #fff; font-weight: 700; margin-top: 5px;">-</p>
+                    </div>
+                    <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.3);">
+                        <label style="font-size: 0.65rem; color: #4ade80; font-weight: 900; text-transform: uppercase;">Ciudad / CP</label>
+                        <p id="res-city" style="color: #fff; font-weight: 700; margin-top: 5px;">-</p>
+                    </div>
+                    <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.3);">
+                        <label style="font-size: 0.65rem; color: #4ade80; font-weight: 900; text-transform: uppercase;">Zona Horaria</label>
+                        <p id="res-tz" style="color: #fff; font-weight: 700; margin-top: 5px;">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function getMyIP() {
+        try {
+            const res = await fetch('https://api.ipify.org?format=json');
+            const data = await res.json();
+            document.getElementById('ip-input').value = data.ip;
+            checkIP();
+        } catch (e) {}
+    }
+
+    async function checkIP(btn) {
+        const ip = document.getElementById('ip-input').value.trim();
+        if(!ip) return;
+
+        try {
+            const res = await fetch(`https://ipapi.co/${ip}/json/`);
+            const data = await res.json();
+
+            if(data.error) {
+                showToast("IP no válida o límite excedido");
+                return;
+            }
+
+            document.getElementById('res-loc').innerText = `${data.country_name} (${data.country_code})`;
+            document.getElementById('res-isp').innerText = data.org || 'Desconocido';
+            document.getElementById('res-city').innerText = `${data.city}, ${data.postal || 'N/A'}`;
+            document.getElementById('res-tz').innerText = data.timezone;
+
+            document.getElementById('ip-results').style.display = 'block';
+            if(btn) animateBtn(btn);
+            showToast("Análisis de IP completado");
+        } catch (e) {
+            showToast("Error al conectar con el servidor de inteligencia");
+        }
+    }
+</script>

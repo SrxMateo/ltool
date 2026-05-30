@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Hash Checker Elite" suite="ciberseguridad" activeTool="hash-check">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #4ade80;">
+            <h1>Hash Checker & Comparison Hub</h1>
+            <p>Unidad de validación de integridad para archivos y datos. Compara dos firmas digitales (hashes) para asegurar que un archivo descargado o un dato transmitido no ha sido alterado por terceros.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Integridad</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Pega el hash original proporcionado por el autor del archivo.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Pega el hash que has generado localmente de tu copia.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema realizará una comparación bit a bit para confirmar la coincidencia.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <div class="card">
+                <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Hash Original (A)</label>
+                <textarea id="hash-a" oninput="compareHashes()" placeholder="Pega el primer hash aquí..." style="width: 100%; height: 150px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+            </div>
+
+            <div class="card">
+                <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Hash a Comparar (B)</label>
+                <textarea id="hash-b" oninput="compareHashes()" placeholder="Pega el segundo hash aquí..." style="width: 100%; height: 150px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+            </div>
+        </div>
+
+        <div id="comparison-result" class="card" style="margin-top: 2rem; text-align: center; display: none;">
+            <h2 id="result-status" style="font-weight: 950; letter-spacing: -0.02em;">-</h2>
+            <p id="result-desc" style="color: var(--p-text-dim); margin-top: 10px; font-size: 0.9rem;"></p>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function compareHashes() {
+        const a = document.getElementById('hash-a').value.trim().toLowerCase();
+        const b = document.getElementById('hash-b').value.trim().toLowerCase();
+        const result = document.getElementById('comparison-result');
+        const status = document.getElementById('result-status');
+        const desc = document.getElementById('result-desc');
+
+        if(!a || !b) {
+            result.style.display = 'none';
+            return;
+        }
+
+        result.style.display = 'block';
+
+        if(a === b) {
+            status.innerText = "¡COINCIDENCIA TOTAL!";
+            status.style.color = "#22c55e";
+            desc.innerText = "Las firmas digitales son idénticas. La integridad del archivo está garantizada.";
+            showToast("Verificación de integridad exitosa");
+        } else {
+            status.innerText = "¡ERROR: NO COINCIDEN!";
+            status.style.color = "#ef4444";
+            desc.innerText = "Las firmas son diferentes. El archivo podría estar corrupto o haber sido manipulado.";
+        }
+    }
+</script>

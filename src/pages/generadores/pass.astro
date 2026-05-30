@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Secure Pass Elite" activeTool="pass">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Secure Password Engine</h1>
+            <p>Generador de contraseñas de alta seguridad basado en entropía mixta. Crea claves imposibles de descifrar mediante fuerza bruta al combinar múltiples juegos de caracteres y longitudes variables.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Seguridad</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Recomendamos una longitud mínima de 16 caracteres para servicios críticos.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Activa los símbolos para maximizar la complejidad del cifrado.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> LumaX no almacena tus claves; se generan localmente en tu navegador.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="background: #000; padding: 2.5rem; border-radius: 20px; border: 1px solid var(--p-border); position: relative; margin-bottom: 2.5rem; box-shadow: inset 0 10px 30px rgba(0,0,0,0.5);">
+                <input type="text" id="PassResult" readonly style="width: 100%; background: transparent; border: none; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 800; text-align: center; outline: none; letter-spacing: 0.05em;" value="Cargando..." />
+                <button onclick="generatePass(event.currentTarget)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: var(--p-accent-glow); border: 1px solid rgba(251, 191, 36, 0.2); color: var(--p-accent); padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.3s;">
+                    <i class="fa-solid fa-sync"></i>
+                </button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                <div>
+                    <label style="display: block; font-size: 0.75rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.5rem; letter-spacing: 0.1em;">Longitud: <span id="LenVal" style="color: #fff; font-size: 1rem;">24</span></label>
+                    <input type="range" id="PassLen" min="8" max="64" value="24" oninput="document.getElementById('LenVal').innerText = this.value; generatePass();" style="width: 100%; accent-color: var(--p-accent); cursor: pointer;" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <label class="custom-check">
+                        <input type="checkbox" id="IncUpper" checked onchange="generatePass()" /> Mayúsculas (A-Z)
+                    </label>
+                    <label class="custom-check">
+                        <input type="checkbox" id="IncLower" checked onchange="generatePass()" /> Minúsculas (a-z)
+                    </label>
+                    <label class="custom-check">
+                        <input type="checkbox" id="IncNums" checked onchange="generatePass()" /> Números (0-9)
+                    </label>
+                    <label class="custom-check">
+                        <input type="checkbox" id="IncSymbols" checked onchange="generatePass()" /> Símbolos (!@#$)
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="copyPass(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 3rem; font-size: 1rem; box-shadow: 0 20px 40px -10px rgba(251, 191, 36, 0.3);">
+                <i class="fa-solid fa-copy"></i> Copiar Clave Maestra
+            </button>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .custom-check { display: flex; align-items: center; gap: 12px; color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.2s; }
+    .custom-check:hover { color: var(--p-accent); }
+    .custom-check input { width: 18px; height: 18px; accent-color: var(--p-accent); }
+</style>
+
+<script is:inline>
+    function generatePass(btn) {
+        const length = document.getElementById('PassLen').value;
+        const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const lower = "abcdefghijklmnopqrstuvwxyz";
+        const numbers = "0123456789";
+        const symbols = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+
+        let charset = "";
+        if (document.getElementById('IncUpper').checked) charset += upper;
+        if (document.getElementById('IncLower').checked) charset += lower;
+        if (document.getElementById('IncNums').checked) charset += numbers;
+        if (document.getElementById('IncSymbols').checked) charset += symbols;
+
+        if (charset === "") {
+            document.getElementById('PassResult').value = "ERROR: Selecciona opciones";
+            return;
+        }
+
+        let retVal = "";
+        for (let i = 0, n = charset.length; i < length; ++i) {
+            retVal += charset.charAt(Math.floor(Math.random() * n));
+        }
+        document.getElementById('PassResult').value = retVal;
+        if(btn) animateBtn(btn);
+    }
+
+    function copyPass(btn) {
+        const res = document.getElementById("PassResult");
+        if(res.value.includes("ERROR")) return;
+        navigator.clipboard.writeText(res.value);
+        if(btn) animateBtn(btn);
+        showToast("Contraseña copiada de forma segura");
+    }
+
+    // Init
+    generatePass();
+</script>

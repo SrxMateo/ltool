@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Data Units Hub Elite" activeTool="units">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Data Units Converter</h1>
+            <p>Calculadora técnica de almacenamiento para convertir entre Bytes, Kilobytes, Megabytes, Gigabytes y Terabytes. Utiliza la base binaria estándar (1024) para resultados de precisión industrial.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual Técnico</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Escribe el valor en cualquier casilla de la tabla.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema sincronizará todas las demás unidades automáticamente.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para dimensionar discos, cuotas de red o bases de datos.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="unit-group">
+                    <label>BYTES (B)</label>
+                    <input type="number" id="valB" class="unit-input" oninput="conv('B', this.value)" placeholder="0" />
+                    <button onclick="copyTo('valB', event.currentTarget)" class="mini-copy-btn"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <div class="unit-group">
+                    <label>KILOBYTES (KB)</label>
+                    <input type="number" id="valKB" class="unit-input" oninput="conv('KB', this.value)" placeholder="0" />
+                    <button onclick="copyTo('valKB', event.currentTarget)" class="mini-copy-btn"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <div class="unit-group">
+                    <label>MEGABYTES (MB)</label>
+                    <input type="number" id="valMB" class="unit-input" oninput="conv('MB', this.value)" placeholder="0" />
+                    <button onclick="copyTo('valMB', event.currentTarget)" class="mini-copy-btn"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <div class="unit-group">
+                    <label>GIGABYTES (GB)</label>
+                    <input type="number" id="valGB" class="unit-input" oninput="conv('GB', this.value)" placeholder="0" />
+                    <button onclick="copyTo('valGB', event.currentTarget)" class="mini-copy-btn"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <div class="unit-group">
+                    <label>TERABYTES (TB)</label>
+                    <input type="number" id="valTB" class="unit-input" oninput="conv('TB', this.value)" placeholder="0" />
+                    <button onclick="copyTo('valTB', event.currentTarget)" class="mini-copy-btn"><i class="fa-solid fa-copy"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .unit-group { display: flex; align-items: center; gap: 20px; background: rgba(0,0,0,0.3); padding: 1.2rem 1.8rem; border-radius: 16px; border: 1px solid #222; transition: 0.3s; }
+    .unit-group:focus-within { border-color: var(--p-accent); background: rgba(251, 191, 36, 0.03); }
+    .unit-group label { width: 180px; font-size: 0.75rem; font-weight: 900; color: var(--p-accent); letter-spacing: 0.05em; }
+    .unit-input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700; outline: none; }
+    .mini-copy-btn { background: none; border: none; color: #444; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+    .mini-copy-btn:hover { color: var(--p-accent); transform: scale(1.1); }
+</style>
+
+<script is:inline>
+    function conv(unit, val) {
+        if (!val) val = 0;
+        let bytes = 0;
+        const factor = 1024;
+
+        if (unit === 'B') bytes = val;
+        if (unit === 'KB') bytes = val * factor;
+        if (unit === 'MB') bytes = val * Math.pow(factor, 2);
+        if (unit === 'GB') bytes = val * Math.pow(factor, 3);
+        if (unit === 'TB') bytes = val * Math.pow(factor, 4);
+
+        if (unit !== 'B') document.getElementById('valB').value = bytes;
+        if (unit !== 'KB') document.getElementById('valKB').value = (bytes / factor).toFixed(2);
+        if (unit !== 'MB') document.getElementById('valMB').value = (bytes / Math.pow(factor, 2)).toFixed(4);
+        if (unit !== 'GB') document.getElementById('valGB').value = (bytes / Math.pow(factor, 3)).toFixed(6);
+        if (unit !== 'TB') document.getElementById('valTB').value = (bytes / Math.pow(factor, 4)).toFixed(8);
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value || el.value == 0) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Valor copiado con éxito");
+    }
+</script>

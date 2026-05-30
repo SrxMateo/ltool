@@ -1,0 +1,102 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Image Master Elite" suite="convertidores" activeTool="image">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Image Master & Optimizer</h1>
+            <p>Unidad de procesamiento visual para convertir y optimizar imágenes localmente. Cambia formatos entre PNG, JPG y WebP sin perder calidad y reduce el peso de tus archivos para mejorar la velocidad web.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Sube o arrastra tu imagen al panel de procesamiento.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona el formato de salida deseado (recomendamos WebP para web).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El proceso es 100% privado; la imagen nunca sube al servidor.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div id="drop-zone" style="border: 2px dashed #333; padding: 4rem; border-radius: 20px; transition: 0.3s; cursor: pointer;">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--p-accent); margin-bottom: 1rem;"></i>
+                <h3 style="color: #fff; margin-bottom: 0.5rem;">Seleccionar Imagen</h3>
+                <p style="color: var(--p-text-dim); font-size: 0.9rem;">PNG, JPG o WebP</p>
+                <input type="file" id="img-input" accept="image/*" style="display: none;" />
+            </div>
+
+            <div id="processing-zone" style="display: none; margin-top: 3rem;">
+                <div style="display: flex; gap: 2rem; align-items: center; justify-content: center; margin-bottom: 2.5rem;">
+                    <img id="preview" style="max-width: 200px; max-height: 200px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+                    <div style="text-align: left;">
+                        <p id="file-info" style="color: #fff; font-weight: 800; margin-bottom: 10px;"></p>
+                        <select id="format-select" class="curr-select" style="width: 100%;">
+                            <option value="image/webp">Exportar a WebP</option>
+                            <option value="image/png">Exportar a PNG</option>
+                            <option value="image/jpeg">Exportar a JPG</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="processImage(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                    Procesar y Descargar <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    #drop-zone:hover { border-color: var(--p-accent); background: var(--p-accent-glow); }
+    .curr-select { background: #111; border: 1px solid #333; color: #fff; padding: 10px 15px; border-radius: 12px; font-weight: 800; cursor: pointer; outline: none; }
+</style>
+
+<script is:inline>
+    const dropZone = document.getElementById('drop-zone');
+    const input = document.getElementById('img-input');
+    const preview = document.getElementById('preview');
+    const procZone = document.getElementById('processing-zone');
+    const fileInfo = document.getElementById('file-info');
+
+    dropZone.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) handleFile(file);
+    });
+
+    function handleFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            procZone.style.display = 'block';
+            fileInfo.innerText = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function processImage(btn) {
+        const format = document.getElementById('format-select').value;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `lumax-optimized.${format.split('/')[1]}`;
+                a.click();
+                if(btn) animateBtn(btn);
+                showToast("Imagen optimizada y descargada");
+            }, format, 0.85);
+        };
+        img.src = preview.src;
+    }
+</script>

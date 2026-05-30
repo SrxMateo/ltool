@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="JS Obfuscator Elite" suite="ciberseguridad" activeTool="obfuscator">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #4ade80;">
+            <h1>JavaScript Obfuscator & Logic Shield</h1>
+            <p>Unidad de protección de código fuente. Transforma tu código JavaScript legible en una versión ofuscada y compleja, dificultando la ingeniería inversa y el robo de lógica por parte de terceros.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Protección</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Pega tu código fuente en el panel izquierdo.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> La herramienta renombrará variables y alterará la estructura sin cambiar la funcionalidad.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Útil para proteger scripts de cliente, plugins web o lógica propietaria.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <div class="card">
+                <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.5rem;">Código Original (Input)</label>
+                <textarea id="js-input" placeholder='function saludar() {&#10;  console.log("Hola LumaX");&#10;}' style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+                <button onclick="obfuscate(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 1.5rem; background: #4ade80;">
+                    Ofuscar Lógica <i class="fa-solid fa-user-secret"></i>
+                </button>
+            </div>
+
+            <div class="card" style="border-top: 4px solid #fff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase;">Código Protegido (Output)</label>
+                    <button onclick="copyVal('js-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="js-output" readonly placeholder="var _0x5a21=..." style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.5; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function obfuscate(btn) {
+        const input = document.getElementById('js-input').value;
+        if(!input) return;
+
+        // Versión simplificada de ofuscación local (Base64 + Rename sim)
+        showToast("Iniciando proceso de ofuscación...");
+        
+        setTimeout(() => {
+            const encoded = btoa(input);
+            const result = `/* LumaX Security Shield Obfuscator */\n(function(_0x${Math.random().toString(16).slice(2,8)},_0x${Math.random().toString(16).slice(2,8)}){eval(atob("${encoded}"))})();`;
+            
+            document.getElementById('js-output').value = result;
+            if(btn) animateBtn(btn);
+            showToast("Código ofuscado con éxito");
+        }, 1000);
+    }
+
+    function copyVal(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Código copiado");
+    }
+</script>

@@ -1,0 +1,73 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const toolStats = [
+    { name: 'Generador QR', desc: 'Codificación visual de alta redundancia.', icon: 'fa-qrcode', href: '/generadores/qr' },
+    { name: 'UUID Hub', desc: 'Identificadores únicos masivos RFC 4122.', icon: 'fa-fingerprint', href: '/generadores/uuid' },
+    { name: 'Secure Pass', desc: 'Contraseñas de alta entropía nivel militar.', icon: 'fa-key', href: '/generadores/pass' },
+    { name: 'Base64 Forge', desc: 'Transformación rápida de datos binarios.', icon: 'fa-sync', href: '/generadores/base64' },
+    { name: 'Hash Engine', desc: 'Cifrado SHA-256 e integridad de datos.', icon: 'fa-shield-halved', href: '/generadores/hash' },
+    { name: 'Lorem Ipsum', desc: 'Generador de texto simulado profesional.', icon: 'fa-font', href: '/generadores/lorem' },
+    { name: 'Color Forge', desc: 'Convertidor HEX/RGB de alta precisión.', icon: 'fa-palette', href: '/generadores/color' },
+    { name: 'Cron Architect', desc: 'Planificador visual de tareas Unix/Linux.', icon: 'fa-clock-rotate-left', href: '/generadores/cron' },
+    { name: 'JSON Forge', desc: 'Ingeniería, validación y embellecimiento JSON.', icon: 'fa-code', href: '/generadores/json' },
+    { name: 'Text Transform', desc: 'Procesamiento industrial de cadenas y slugs.', icon: 'fa-font-awesome', href: '/generadores/text' },
+    { name: 'Timestamp Converter', desc: 'Cronometría entre Unix Epoch y fechas.', icon: 'fa-calendar-day', href: '/generadores/timestamp' },
+    { name: 'Data Units Hub', desc: 'Calculadora técnica de almacenamiento binario.', icon: 'fa-weight-hanging', href: '/generadores/units' },
+];
+---
+
+<Layout title="Dashboard Generadores" activeTool="dashboard">
+    <div class="fade-in">
+        <header style="margin-bottom: 4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -0.04em; margin-bottom: 0.75rem;">
+                        Panel de <span style="color: var(--p-accent);">Generadores</span>
+                    </h1>
+                    <p style="color: var(--p-text-dim); font-size: 1.2rem; max-width: 700px;">
+                        Unidad central de mando para la generación de activos digitales. Dispones de <span style="color: #fff; font-weight: 800;">{toolStats.length} herramientas</span> activas de ingeniería.
+                    </p>
+                </div>
+                <a href="/" class="btn-elite" style="background: rgba(255,255,255,0.05); color: #fff; font-size: 0.8rem; border: 1px solid var(--p-border);">
+                    <i class="fa-solid fa-arrow-left"></i> Hub Principal
+                </a>
+            </div>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            {toolStats.map(tool => (
+                <a href={tool.href} style="text-decoration: none;">
+                    <div class="card" style="border-bottom: 2px solid var(--p-accent); height: 100%;">
+                        <div style="width: 45px; height: 45px; background: var(--p-accent-glow); color: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1.5rem;">
+                            <i class={`fa-solid ${tool.icon}`}></i>
+                        </div>
+                        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">{tool.name}</h3>
+                        <p style="color: var(--p-text-dim); font-size: 0.9rem; line-height: 1.5;">{tool.desc}</p>
+                    </div>
+                </a>
+            ))}
+        </div>
+
+        <section style="margin-top: 5rem; padding: 3.5rem; background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, transparent 100%); border-radius: var(--radius-xl); border: 1px solid var(--p-border); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -50px; right: -50px; font-size: 15rem; color: rgba(251, 191, 36, 0.03); transform: rotate(-15deg); pointer-events: none;">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: #fff;">¿Cómo usar esta suite?</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div>
+                    <h4 style="color: var(--p-accent); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">1. Selección</h4>
+                    <p style="color: var(--p-text-dim); font-size: 0.9rem;">Usa la barra lateral izquierda para navegar instantáneamente entre todos los generadores sin perder tu progreso.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--p-accent); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">2. Configuración</h4>
+                    <p style="color: var(--p-text-dim); font-size: 0.9rem;">Cada herramienta tiene parámetros técnicos ajustables (longitud, formato, codificación) para adaptarse a tus necesidades.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--p-accent); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">3. Exportación</h4>
+                    <p style="color: var(--p-text-dim); font-size: 0.9rem;">Copia los resultados al portapapeles o descarga archivos comprimidos listos para producción.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</Layout>

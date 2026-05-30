@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Text Transformer Elite" activeTool="text">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Text Transformer & Slug Forge</h1>
+            <p>Unidad de procesamiento industrial para cadenas de texto. Optimiza tus contenidos convirtiendo cajas, generando slugs SEO-friendly para URLs y limpiando carácteres especiales de forma automática.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>URL Slug:</strong> Convierte títulos (ej: "Hola Mundo!") en rutas seguras (hola-mundo).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Case Transform:</strong> Cambia instantáneamente entre mayúsculas y minúsculas masivas.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para administradores que necesitan normalizar nombres de archivos o carpetas.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <div class="card">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.2rem; letter-spacing: 0.1em;">Texto Original (Input)</label>
+                <textarea id="TextInput" placeholder="Escribe aquí tu texto..." style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.8rem; color: #fff; outline: none; font-size: 1rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase; letter-spacing: 0.1em;">Transform Result (Output)</label>
+                    <button onclick="copyTo('TextOutput', event.currentTarget)" style="background: none; border: none; color: var(--p-accent); cursor: pointer;"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="TextOutput" readonly style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.8rem; color: var(--p-accent); outline: none; font-size: 1rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+
+        <div style="margin-top: 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem;">
+            <button onclick="transform('up', event.currentTarget)" class="btn-elite" style="background: rgba(255,255,255,0.04); color: #fff; border: 1px solid #333;">MAYÚSCULAS</button>
+            <button onclick="transform('low', event.currentTarget)" class="btn-elite" style="background: rgba(255,255,255,0.04); color: #fff; border: 1px solid #333;">minúsculas</button>
+            <button onclick="transform('slug', event.currentTarget)" class="btn-elite btn-primary" style="font-size: 1rem;">
+                URL-SLUG-PRO <i class="fa-solid fa-link"></i>
+            </button>
+            <button onclick="transform('clear')" class="btn-elite" style="background: #222; color: #64748b;">Limpiar Panel</button>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function transform(type, btn) {
+        const input = document.getElementById('TextInput').value;
+        if(!input && type !== 'clear') return;
+        let result = "";
+
+        if (type === 'up') result = input.toUpperCase();
+        if (type === 'low') result = input.toLowerCase();
+        if (type === 'slug') {
+            result = input
+                .toLowerCase()
+                .trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, "") 
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '-');
+        }
+        if (type === 'clear') {
+            document.getElementById('TextInput').value = "";
+            document.getElementById('TextOutput').value = "";
+            return;
+        }
+
+        document.getElementById('TextOutput').value = result;
+        if(btn) animateBtn(btn);
+        showToast("Texto transformado");
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Texto copiado con éxito");
+    }
+</script>

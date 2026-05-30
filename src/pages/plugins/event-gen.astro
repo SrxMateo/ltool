@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Event Listener Gen" suite="plugins" activeTool="event">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>Event Listener Generator</h1>
+            <p>Unidad de generación de boilerplate para eventos de Spigot/Paper. Crea rápidamente la estructura de tus clases <code>Listener</code> con los eventos más comunes, ahorrando tiempo de escritura repetitiva.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Codificación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona el tipo de evento que deseas capturar (Player, Entity, Block).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará el método con la anotación <code>@EventHandler</code> adecuada.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Copia el código Java y agrégalo a tu clase Listener.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label class="p-label">Tipo de Evento</label>
+                <select id="event-select" onchange="updateEvent()" class="p-select" style="width: 100%;">
+                    <option value="join">PlayerJoinEvent</option>
+                    <option value="quit">PlayerQuitEvent</option>
+                    <option value="chat">AsyncChatEvent (Paper)</option>
+                    <option value="break">BlockBreakEvent</option>
+                    <option value="damage">EntityDamageByEntityEvent</option>
+                    <option value="interact">PlayerInteractEvent</option>
+                </select>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Código Java (Listener)</label>
+                    <button onclick="copyTo('event-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="event-output" readonly style="width: 100%; height: 300px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    const events = {
+        join: `@EventHandler\npublic void onJoin(PlayerJoinEvent event) {\n    Player player = event.getPlayer();\n    player.sendMessage(Component.text("¡Bienvenido Elite!"));\n}`,
+        quit: `@EventHandler\npublic void onQuit(PlayerQuitEvent event) {\n    // Lógica de desconexión\n}`,
+        chat: `@EventHandler\npublic void onChat(AsyncChatEvent event) {\n    // Lógica de chat con MiniMessage\n}`,
+        break: `@EventHandler\npublic void onBreak(BlockBreakEvent event) {\n    if (event.getPlayer().getGameMode() == GameMode.SURVIVAL) {\n        // Acción\n    }\n}`,
+        damage: `@EventHandler\npublic void onDamage(EntityDamageByEntityEvent event) {\n    // Lógica de combate\n}`,
+        interact: `@EventHandler\npublic void onInteract(PlayerInteractEvent event) {\n    // Lógica de click derecho/izquierdo\n}`
+    };
+
+    function updateEvent() {
+        const val = document.getElementById('event-select').value;
+        document.getElementById('event-output').value = events[val];
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Código Java copiado");
+    }
+
+    updateEvent();
+</script>

@@ -1,0 +1,64 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="MAC Lookup Elite" suite="network" activeTool="mac">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>MAC Address Lookup & OUI Analyzer</h1>
+            <p>Unidad de identificación de hardware. Localiza el fabricante original de cualquier tarjeta de red mediante su dirección MAC (OUI). Herramienta vital para auditorías de seguridad física y gestión de inventario de red.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Identificación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa la dirección MAC (ej: 00:1A:2B:3C:4D:5E).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema consultará el prefijo en la base de datos de fabricantes.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Útil para identificar dispositivos desconocidos conectados a tu red WiFi.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.2rem; letter-spacing: 0.1em;">Dirección MAC</label>
+                <input type="text" id="mac-input" placeholder="00:00:00:00:00:00" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.2rem; color: #fff; font-weight: 800; outline: none; font-size: 1.3rem; text-align: center; font-family: 'JetBrains Mono', monospace;" />
+            </div>
+
+            <button onclick="lookupMAC(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Consultar Fabricante <i class="fa-solid fa-search"></i>
+            </button>
+            
+            <div id="mac-results" style="margin-top: 4rem; display: none;">
+                <div class="card" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(192, 132, 252, 0.05) 0%, transparent 100%); border-color: var(--p-accent);">
+                    <h2 id="vendor-name" style="font-size: 1.8rem; font-weight: 950; color: #fff; margin-bottom: 0.5rem;">-</h2>
+                    <p id="vendor-details" style="color: var(--p-text-dim); font-size: 0.9rem; font-weight: 600;">Información del fabricante cargada.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function lookupMAC(btn) {
+        const mac = document.getElementById('mac-input').value.trim();
+        if(!mac) return;
+
+        try {
+            const res = await fetch(`https://api.macvendors.com/${mac}`);
+            if(res.ok) {
+                const vendor = await res.text();
+                document.getElementById('vendor-name').innerText = vendor;
+                document.getElementById('vendor-details').innerText = "Vendedor verificado en la base de datos OUI.";
+            } else {
+                document.getElementById('vendor-name').innerText = "No encontrado";
+                document.getElementById('vendor-details').innerText = "La dirección MAC no está asociada a ningún fabricante conocido.";
+            }
+            
+            document.getElementById('mac-results').style.display = 'block';
+            if(btn) animateBtn(btn);
+            showToast("Búsqueda MAC finalizada");
+        } catch (e) {
+            showToast("Error de conexión");
+        }
+    }
+</script>

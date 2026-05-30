@@ -1,0 +1,64 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Font Mapper Elite" suite="web" activeTool="font-mapper">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Web Font & Icon Mapper</h1>
+            <p>Unidad de referencia para tipografías e iconos. Accede rápidamente a las clases de FontAwesome, configuraciones de Google Fonts y familias tipográficas seguras para la web (Web Safe Fonts).</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Estilo</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona la familia tipográfica para ver su CSS <code>font-family</code>.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará el código listo para integrar en tus estilos globales.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para asegurar la legibilidad en diferentes sistemas operativos.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label class="p-label">Familia Tipográfica</label>
+                <select id="font-select" onchange="updateFont()" class="p-select" style="width: 100%;">
+                    <option value="system">System UI (Nativa)</option>
+                    <option value="sans">Modern Sans (Plus Jakarta)</option>
+                    <option value="mono">Developer Mono (JetBrains)</option>
+                    <option value="serif">Elegant Serif (Georgia)</option>
+                </select>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Regla CSS</label>
+                    <button onclick="copyTo('font-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="font-output" readonly style="width: 100%; height: 150px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 1rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    const fonts = {
+        system: `font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;`,
+        sans: `font-family: 'Plus Jakarta Sans', sans-serif;`,
+        mono: `font-family: 'JetBrains Mono', monospace;`,
+        serif: `font-family: Georgia, 'Times New Roman', serif;`
+    };
+
+    function updateFont() {
+        const val = document.getElementById('font-select').value;
+        document.getElementById('font-output').value = fonts[val];
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Estilo de fuente copiado");
+    }
+
+    updateFont();
+</script>

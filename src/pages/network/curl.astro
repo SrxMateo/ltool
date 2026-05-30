@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="CURL Architect Elite" suite="network" activeTool="curl">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>CURL Architect & Request Forge</h1>
+            <p>Unidad de transformación de comandos. Convierte instrucciones CURL de terminal en código funcional para JavaScript (Fetch API), permitiendo integrar peticiones complejas en tus aplicaciones de forma instantánea.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Conversión</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Pega tu comando CURL original (ej: curl -X POST https://api...).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema extraerá el método, los headers y el cuerpo de la petición.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Obtendrás una función Fetch de JavaScript lista para copiar y usar.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <div class="card">
+                <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.5rem; letter-spacing: 0.1em;">Comando CURL (Input)</label>
+                <textarea id="curl-input" placeholder='curl -X GET "https://api.lumax.lat/v1/status" -H "accept: application/json"' style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.8rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.95rem; line-height: 1.6; resize: none;"></textarea>
+                <button onclick="architect(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 2rem;">
+                    Generar Código JS <i class="fa-solid fa-bolt"></i>
+                </button>
+            </div>
+
+            <div class="card" style="border-top: 4px solid #fff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase; letter-spacing: 0.1em;">JavaScript Fetch (Output)</label>
+                    <button onclick="copyTo('js-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="js-output" readonly placeholder="fetch(...) .then(res => ...)" style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.8rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function architect(btn) {
+        const input = document.getElementById('curl-input').value.trim();
+        if(!input) return;
+
+        // Lógica de conversión técnica
+        const urlMatch = input.match(/https?:\/\/[^\s"']+/);
+        const url = urlMatch ? urlMatch[0] : 'URL_NOT_FOUND';
+        
+        let method = "GET";
+        if(input.includes("-X POST")) method = "POST";
+        if(input.includes("-X PUT")) method = "PUT";
+        if(input.includes("-X DELETE")) method = "DELETE";
+
+        const code = `fetch("${url}", {\n    method: "${method}",\n    headers: {\n        "Content-Type": "application/json"\n    }\n})\n.then(response => response.json())\n.then(data => console.log(data))\n.catch(err => console.error(err));`;
+        
+        document.getElementById('js-output').value = code;
+        if(btn) animateBtn(btn);
+        showToast("Código Fetch generado");
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Código copiado con éxito");
+    }
+</script>

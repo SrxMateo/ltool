@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Web Manifest Hub Elite" suite="web" activeTool="manifest-gen">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Web Manifest & PWA Architect</h1>
+            <p>Unidad de configuración para Aplicaciones Web Progresivas (PWA). Genera el archivo <code>manifest.json</code> necesario para que tu sitio web sea instalable en dispositivos móviles y de escritorio.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Instalación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el nombre de la aplicación y el color de tema de la marca.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Configura el modo de visualización (Standalone es el estándar para apps).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Descarga el JSON y súbelo a la raíz de tu proyecto web.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2.5rem;">
+            <div class="card">
+                <h3 style="color:#fff; margin-bottom:1.5rem; font-size:1.1rem;">Ajustes de la App</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label class="p-label">Nombre de la App</label>
+                    <input type="text" id="pwa-name" oninput="genManifest()" value="LumaX Tools" class="p-input" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label class="p-label">Color de Tema</label>
+                    <input type="text" id="pwa-color" oninput="genManifest()" value="#f87171" class="p-input" />
+                </div>
+
+                <div class="form-group">
+                    <label class="p-label">Display Mode</label>
+                    <select id="pwa-display" onchange="genManifest()" class="p-select" style="width: 100%;">
+                        <option value="standalone">Standalone (App nativa)</option>
+                        <option value="minimal-ui">Minimal UI</option>
+                        <option value="browser">Browser</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase;">manifest.json</label>
+                    <button onclick="copyTo('pwa-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="pwa-output" readonly style="width: 100%; height: 350px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genManifest() {
+        const name = document.getElementById('pwa-name').value;
+        const color = document.getElementById('pwa-color').value;
+        const display = document.getElementById('pwa-display').value;
+
+        const res = {
+            "name": name,
+            "short_name": name.split(' ')[0],
+            "start_url": "/",
+            "display": display,
+            "background_color": "#000000",
+            "theme_color": color,
+            "icons": [
+                {
+                    "src": "/icon-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "/icon-512x512.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        };
+
+        document.getElementById('pwa-output').value = JSON.stringify(res, null, 4);
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Manifiesto PWA copiado");
+    }
+
+    genManifest();
+</script>

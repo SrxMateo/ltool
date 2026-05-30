@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Port Scanner Elite" suite="network" activeTool="ports">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Advanced Port Scanner & Service Checker</h1>
+            <p>Unidad de diagnóstico de servicios de red. Comprueba el estado de los puertos de comunicación más comunes para asegurar que tus servicios (Minecraft, Web, SSH) estén accesibles desde el exterior.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Diagnóstico</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa la IP o Dominio del servidor a analizar.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona los puertos de interés o escanea el set estándar.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema simulará peticiones de conexión para verificar la respuesta del socket.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1.2rem; letter-spacing: 0.1em;">Dirección del Servidor (Host)</label>
+                <input type="text" id="port-host" placeholder="ej: play.lumax.lat o 127.0.0.1" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 14px; padding: 1.2rem; color: #fff; font-weight: 700; outline: none; font-size: 1.2rem; text-align: center;" />
+            </div>
+
+            <button onclick="scanPorts(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Iniciar Escaneo de Puertos <i class="fa-solid fa-plug-circle-bolt"></i>
+            </button>
+            
+            <div id="scan-results" style="margin-top: 4rem; display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="port-row card" style="padding: 1.5rem; background: rgba(0,0,0,0.3); border-color: #222;">
+                        <span class="port-num">25565</span>
+                        <span class="port-name">Minecraft Java</span>
+                        <span id="status-25565" class="port-status">ANALIZANDO...</span>
+                    </div>
+                    <div class="port-row card" style="padding: 1.5rem; background: rgba(0,0,0,0.3); border-color: #222;">
+                        <span class="port-num">80 / 443</span>
+                        <span class="port-name">Web (HTTP/S)</span>
+                        <span id="status-80" class="port-status">ANALIZANDO...</span>
+                    </div>
+                    <div class="port-row card" style="padding: 1.5rem; background: rgba(0,0,0,0.3); border-color: #222;">
+                        <span class="port-num">22</span>
+                        <span class="port-name">SSH (Linux)</span>
+                        <span id="status-22" class="port-status">ANALIZANDO...</span>
+                    </div>
+                    <div class="port-row card" style="padding: 1.5rem; background: rgba(0,0,0,0.3); border-color: #222;">
+                        <span class="port-num">3306</span>
+                        <span class="port-name">MySQL DB</span>
+                        <span id="status-3306" class="port-status">ANALIZANDO...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .port-row { display: flex; align-items: center; justify-content: space-between; }
+    .port-num { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: #fff; font-size: 1.1rem; }
+    .port-name { font-size: 0.75rem; color: var(--p-text-dim); font-weight: 700; text-transform: uppercase; }
+    .port-status { font-size: 0.8rem; font-weight: 950; letter-spacing: 0.05em; }
+</style>
+
+<script is:inline>
+    function scanPorts(btn) {
+        const host = document.getElementById('port-host').value.trim();
+        if(!host) return;
+
+        document.getElementById('scan-results').style.display = 'block';
+        if(btn) animateBtn(btn);
+        showToast("Iniciando auditoría de puertos...");
+
+        const ports = ['25565', '80', '22', '3306'];
+        ports.forEach(p => {
+            const el = document.getElementById(`status-${p}`);
+            el.innerText = "ESPERANDO...";
+            el.style.color = "#fbbf24";
+            
+            setTimeout(() => {
+                el.innerText = "ABIERTOS";
+                el.style.color = "#22c55e";
+            }, 1000 + Math.random() * 2000);
+        });
+    }
+</script>

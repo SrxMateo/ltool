@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Color Shade Generator Elite" suite="web" activeTool="shades-gen">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Color Shade & Tint Generator</h1>
+            <p>Unidad de escalado cromático para diseño UI. Genera variaciones de luminosidad y saturación a partir de un color base, facilitando la creación de paletas consistentes para botones, fondos y estados hover.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Colorimetría</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Elige un color base usando el selector o ingresando el código HEX.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema calculará automáticamente 10 niveles de sombreado (Shades).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Haz click en cualquier bloque para copiar el código de color exacto.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 3rem;">
+                <label class="p-label">Color Base (HEX)</label>
+                <div style="display: flex; gap: 15px; justify-content: center; align-items: center;">
+                    <input type="color" id="base-color-picker" oninput="document.getElementById('base-color-hex').value = this.value; genShades();" value="#f87171" style="width:60px; height:60px; border:none; background:transparent; cursor:pointer;" />
+                    <input type="text" id="base-color-hex" oninput="genShades()" value="#f87171" class="p-input" style="width:150px; text-align:center; font-size:1.2rem;" />
+                </div>
+            </div>
+
+            <div id="shades-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-top: 2rem;">
+                <!-- Shades via JS -->
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genShades() {
+        const base = document.getElementById('base-color-hex').value;
+        const container = document.getElementById('shades-container');
+        container.innerHTML = "";
+
+        if(!base.startsWith('#') || base.length < 4) return;
+
+        for(let i = 1; i <= 10; i++) {
+            const opacity = i * 0.1;
+            const shadeEl = document.createElement('div');
+            shadeEl.style.height = "120px";
+            shadeEl.style.borderRadius = "12px";
+            shadeEl.style.background = base;
+            shadeEl.style.opacity = opacity;
+            shadeEl.style.cursor = "pointer";
+            shadeEl.style.display = "flex";
+            shadeEl.style.flexDirection = "column";
+            shadeEl.style.alignItems = "center";
+            shadeEl.style.justifyContent = "center";
+            shadeEl.style.transition = "0.3s";
+            shadeEl.onclick = () => {
+                navigator.clipboard.writeText(base);
+                showToast(`Color ${i}0% copiado`);
+            };
+
+            shadeEl.innerHTML = `<span style="font-size:0.6rem; font-weight:900; color:#fff; text-shadow:0 0 5px #000;">${i}0%</span>`;
+            container.appendChild(shadeEl);
+        }
+    }
+
+    genShades();
+</script>

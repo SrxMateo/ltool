@@ -1,0 +1,64 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Permission Hub Elite" suite="plugins" activeTool="perms">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>Permission & Hierarchy Architect</h1>
+            <p>Unidad de diseño para sistemas de permisos. Estructura los nodos de acceso para tus plugins (ej: <code>miplugin.admin</code>) y organiza la jerarquía de rangos para LuckPerms o sistemas similares.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Acceso</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el nombre base de tu plugin o sistema.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará una lista estandarizada de permisos por niveles (User, VIP, Admin).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Útil para documentar tu plugin y ayudar a los administradores a configurarlo.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label class="p-label">Nombre Base (Prefix)</label>
+                <input type="text" id="perm-prefix" oninput="genPerms()" value="lumax" class="p-input" />
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase;">Esquema de Permisos</label>
+                    <button onclick="copyTo('perm-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="perm-output" readonly style="width: 100%; height: 250px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genPerms() {
+        const prefix = document.getElementById('perm-prefix').value.toLowerCase().trim() || 'plugin';
+        let res = `[ NIVEL: USUARIO ]\n`;
+        res += `- ${prefix}.use\n`;
+        res += `- ${prefix}.help\n\n`;
+        res += `[ NIVEL: STAFF ]\n`;
+        res += `- ${prefix}.staff\n`;
+        res += `- ${prefix}.kick\n\n`;
+        res += `[ NIVEL: ADMIN ]\n`;
+        res += `- ${prefix}.*\n`;
+        res += `- ${prefix}.admin\n`;
+        res += `- ${prefix}.reload`;
+
+        document.getElementById('perm-output').value = res;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Esquema de permisos copiado");
+    }
+
+    // Init
+    genPerms();
+</script>

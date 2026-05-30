@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Unit Master Pro" suite="convertidores" activeTool="units-pro">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Unit Master Pro</h1>
+            <p>Calculadora universal de magnitudes físicas. Convierte con precisión científica entre diferentes sistemas de medida para Longitud, Masa y Temperatura. Soporta sistemas Métrico e Imperial.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual Técnico</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona la categoría de medida que deseas transformar.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa el valor original y el sistema realizará el cálculo síncrono.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para ingeniería, logística y diseño de hardware.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- LENGTH SECTION -->
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--p-accent);">
+            <h3 style="color: #fff; margin-bottom: 1.5rem;"><i class="fa-solid fa-ruler"></i> Longitud (Métrico / Imperial)</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div class="unit-box">
+                    <label>Metros (m)</label>
+                    <input type="number" id="l_m" oninput="convLen('m', this.value)" placeholder="0" />
+                </div>
+                <div class="unit-box">
+                    <label>Kilómetros (km)</label>
+                    <input type="number" id="l_km" oninput="convLen('km', this.value)" placeholder="0" />
+                </div>
+                <div class="unit-box">
+                    <label>Pies (ft)</label>
+                    <input type="number" id="l_ft" oninput="convLen('ft', this.value)" placeholder="0" />
+                </div>
+                <div class="unit-box">
+                    <label>Pulgadas (in)</label>
+                    <input type="number" id="l_in" oninput="convLen('in', this.value)" placeholder="0" />
+                </div>
+            </div>
+        </div>
+
+        <!-- TEMP SECTION -->
+        <div class="card" style="border-left: 4px solid #fff;">
+            <h3 style="color: #fff; margin-bottom: 1.5rem;"><i class="fa-solid fa-temperature-half"></i> Temperatura</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div class="unit-box">
+                    <label>Celsius (°C)</label>
+                    <input type="number" id="t_c" oninput="convTemp('c', this.value)" placeholder="0" />
+                </div>
+                <div class="unit-box">
+                    <label>Fahrenheit (°F)</label>
+                    <input type="number" id="t_f" oninput="convTemp('f', this.value)" placeholder="0" />
+                </div>
+                <div class="unit-box">
+                    <label>Kelvin (K)</label>
+                    <input type="number" id="t_k" oninput="convTemp('k', this.value)" placeholder="0" />
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style is:global>
+    .unit-box { background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 14px; border: 1px solid #222; }
+    .unit-box label { display: block; font-size: 0.65rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+    .unit-box input { width: 100%; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; outline: none; }
+    .unit-box:focus-within { border-color: var(--p-accent); }
+</style>
+
+<script is:inline>
+    function convLen(u, v) {
+        if(!v) return;
+        let m = 0;
+        if(u === 'm') m = v;
+        if(u === 'km') m = v * 1000;
+        if(u === 'ft') m = v / 3.28084;
+        if(u === 'in') m = v / 39.3701;
+
+        if(u !== 'm') document.getElementById('l_m').value = m.toFixed(4);
+        if(u !== 'km') document.getElementById('l_km').value = (m / 1000).toFixed(6);
+        if(u !== 'ft') document.getElementById('l_ft').value = (m * 3.28084).toFixed(4);
+        if(u !== 'in') document.getElementById('l_in').value = (m * 39.3701).toFixed(4);
+    }
+
+    function convTemp(u, v) {
+        if(!v) return;
+        let c = 0;
+        const val = parseFloat(v);
+        if(u === 'c') c = val;
+        if(u === 'f') c = (val - 32) * 5/9;
+        if(u === 'k') c = val - 273.15;
+
+        if(u !== 'c') document.getElementById('t_c').value = c.toFixed(2);
+        if(u !== 'f') document.getElementById('t_f').value = (c * 9/5 + 32).toFixed(2);
+        if(u !== 'k') document.getElementById('t_k').value = (c + 273.15).toFixed(2);
+    }
+</script>

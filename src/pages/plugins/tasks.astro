@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Task Scheduler Elite" suite="plugins" activeTool="tasks">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>Bukkit Task & Scheduler Forge</h1>
+            <p>Unidad de generación de tareas asíncronas y temporizadas. Crea la estructura exacta de <code>BukkitRunnable</code> para ejecutar lógica en segundo plano o con retrasos (Delays/Ticks) sin congelar el servidor.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Tareas</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Async:</strong> Tareas que corren fuera del hilo principal (Thread safe).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Ticks:</strong> La unidad de tiempo de Minecraft (20 ticks = 1 segundo).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Copia el código Java para implementar contadores o procesos de fondo.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label class="p-label">Tipo de Tarea</label>
+                <select id="task-select" onchange="updateTask()" class="p-select" style="width: 100%;">
+                    <option value="later">Delayed Task (Retraso)</option>
+                    <option value="timer">Repeating Task (Bucle)</option>
+                    <option value="async">Asynchronous Task (Segundo Plano)</option>
+                </select>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase;">Código Java (Scheduler)</label>
+                    <button onclick="copyTo('task-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="task-output" readonly style="width: 100%; height: 250px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    const tasks = {
+        later: `new BukkitRunnable() {\n    @Override\n    public void run() {\n        // Lógica a ejecutar después de 20 ticks (1s)\n    }\n}.runTaskLater(plugin, 20L);`,
+        timer: `new BukkitRunnable() {\n    @Override\n    public void run() {\n        // Lógica repetitiva cada 10 segundos\n    }\n}.runTaskTimer(plugin, 0L, 200L);`,
+        async: `Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {\n    // Lógica pesada fuera del hilo principal\n});`
+    };
+
+    function updateTask() {
+        const val = document.getElementById('task-select').value;
+        document.getElementById('task-output').value = tasks[val];
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Código de tarea copiado");
+    }
+
+    updateTask();
+</script>

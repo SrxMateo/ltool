@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const toolStats = [
+    { name: 'DNS Lookout', desc: 'Consulta técnica de registros A, MX, TXT y NS.', icon: 'fa-globe', href: '/network/dns' },
+    { name: 'IP Subnet Calc', desc: 'Cálculo de máscaras y rangos de red industrial.', icon: 'fa-network-wired', href: '/network/subnet' },
+    { name: 'Port Scanner', desc: 'Simulación de estado de puertos lógicos.', icon: 'fa-plug-circle-bolt', href: '/network/ports' },
+    { name: 'Headers Pro', desc: 'Análisis de cabeceras HTTP y seguridad web.', icon: 'fa-envelope-open-text', href: '/network/headers' },
+    { name: 'CURL Architect', desc: 'Conversor de comandos CURL a código funcional.', icon: 'fa-code', href: '/network/curl' },
+    { name: 'MAC Lookup', desc: 'Identificador de hardware por dirección MAC.', icon: 'fa-barcode', href: '/network/mac' },
+    { name: 'Whois Lookup', desc: 'Consulta de propiedad y expiración de dominios.', icon: 'fa-fingerprint', href: '/network/whois' },
+    { name: 'Visual Trace', desc: 'Simulación de saltos de red y latencia.', icon: 'fa-route', href: '/network/traceroute' },
+    { name: 'Bandwidth Hub', desc: 'Conversor de velocidad y ancho de banda.', icon: 'fa-gauge-high', href: '/network/bandwidth' },
+    { name: 'IP Info Pro', desc: 'Inteligencia y metadatos de red profunda.', icon: 'fa-satellite-dish', href: '/network/ipinfo' },
+];
+---
+
+<Layout title="Dashboard Network Hub" suite="network" activeTool="dashboard">
+    <div class="fade-in">
+        <header style="margin-bottom: 4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -0.04em; margin-bottom: 0.75rem;">
+                        Network <span style="color: var(--p-accent);">Hub</span> Suite
+                    </h1>
+                    <p style="color: var(--p-text-dim); font-size: 1.2rem; max-width: 700px;">
+                        Centro de mando de infraestructura y conectividad. Herramientas para el diagnóstico, planificación y optimización de redes de alta disponibilidad.
+                    </p>
+                </div>
+                <a href="/" class="btn-elite" style="background: rgba(255,255,255,0.05); color: #fff; font-size: 0.8rem; border: 1px solid var(--p-border);">
+                    <i class="fa-solid fa-arrow-left"></i> Hub Principal
+                </a>
+            </div>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            {toolStats.map(tool => (
+                <a href={tool.href} style="text-decoration: none;">
+                    <div class="card" style="border-bottom: 2px solid var(--p-accent); height: 100%;">
+                        <div style={`width: 45px; height: 45px; background: var(--p-accent-glow); color: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1.5rem;`}>
+                            <i class={`fa-solid ${tool.icon}`}></i>
+                        </div>
+                        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">{tool.name}</h3>
+                        <p style="color: var(--p-text-dim); font-size: 0.9rem; line-height: 1.5;">{tool.desc}</p>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </div>
+</Layout>

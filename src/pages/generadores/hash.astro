@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Hash Engine Elite" activeTool="hash">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Hash Cryptographic Engine</h1>
+            <p>Unidad de cifrado unidireccional de alto rendimiento. Genera firmas digitales (hashes) únicas para cualquier cadena de texto. El hash resultante es una huella dactilar digital que garantiza que los datos no han sido alterados.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual Técnico</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Escribe el texto, contraseña o dato que deseas cifrar en el panel superior.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará instantáneamente el hash SHA-256 (estándar industrial).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Los hashes son irreversibles; no se puede recuperar el texto original desde el hash.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">Texto de Entrada (Raw Data)</label>
+                <textarea id="HashInput" oninput="genHashes()" placeholder="Escribe o pega el contenido aquí..." style="width: 100%; height: 120px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 1rem; line-height: 1.5; resize: none;"></textarea>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- SHA-256 -->
+                <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid #222;">
+                    <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.1em;">Firma SHA-256 (256-bit)</label>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="text" id="Sha256Result" readonly placeholder="Esperando entrada..." style="flex: 1; background: #000; border: 1px solid #333; border-radius: 8px; padding: 12px 15px; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; outline: none;" />
+                        <button onclick="copyTo('Sha256Result', event.currentTarget)" class="btn-elite btn-primary" style="padding-inline: 1.5rem;"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- MD5 (Simulado o via API básica) -->
+                <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.3); border: 1px solid #222; opacity: 0.6;">
+                    <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.1em;">Huella MD5 (Legacy)</label>
+                    <div style="display: flex; gap: 15px;">
+                        <input type="text" id="Md5Result" value="Protocolo en desarrollo..." readonly style="flex: 1; background: #000; border: 1px solid #333; border-radius: 8px; padding: 12px 15px; color: #475569; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; outline: none;" />
+                        <button disabled class="btn-elite" style="background: #333; color: #444; padding-inline: 1.5rem; cursor: not-allowed;"><i class="fa-solid fa-lock"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function genHashes() {
+        const text = document.getElementById('HashInput').value;
+        if (!text) {
+            document.getElementById('Sha256Result').value = "";
+            return;
+        }
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        document.getElementById('Sha256Result').value = hashHex;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value || el.value.includes("...")) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Firma SHA-256 copiada");
+    }
+</script>

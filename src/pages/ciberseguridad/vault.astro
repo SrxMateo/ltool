@@ -1,0 +1,86 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Secure Vault Elite" suite="ciberseguridad" activeTool="vault">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Secure Vault & AES Forge</h1>
+            <p>Unidad de cifrado simétrico de grado militar basada en el algoritmo AES-256. Protege tus secretos, contraseñas o datos sensibles localmente antes de enviarlos por cualquier medio inseguro.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Cifrado</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Clave Maestra:</strong> Define una contraseña fuerte. Se usará para derivar la llave de cifrado.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Seguridad:</strong> El proceso es determinístico y 100% privado en tu navegador.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Importante:</strong> Si olvidas la clave maestra, los datos serán irrecuperables.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.1em;">Clave Maestra (Master Key)</label>
+                <input type="password" id="master-key" placeholder="Tu contraseña secreta..." style="width: 100%; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1rem; color: #fff; font-weight: 800; outline: none; font-size: 1.1rem;" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+                <div>
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Mensaje Claro</label>
+                    <textarea id="plain-text" placeholder="Escribe tu secreto..." style="width: 100%; height: 200px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.2rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+                    <button onclick="encrypt(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 1.5rem;">
+                        Cifrar (Encrypt) <i class="fa-solid fa-lock"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Mensaje Cifrado (Base64)</label>
+                    <textarea id="cipher-text" placeholder="Pega el código cifrado..." style="width: 100%; height: 200px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.2rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+                    <button onclick="decrypt(event.currentTarget)" class="btn-elite" style="width: 100%; margin-top: 1.5rem; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333;">
+                        Descifrar (Decrypt) <i class="fa-solid fa-lock-open"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    // Usando CryptoJS vía CDN para mayor simplicidad y potencia en AES
+</script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+
+<script is:inline>
+    function encrypt(btn) {
+        const key = document.getElementById('master-key').value;
+        const text = document.getElementById('plain-text').value;
+        
+        if(!key || !text) return showToast("Falta clave o mensaje");
+
+        const encrypted = CryptoJS.AES.encrypt(text, key).toString();
+        document.getElementById('cipher-text').value = encrypted;
+        
+        if(btn) animateBtn(btn);
+        showToast("Secreto cifrado con AES-256");
+    }
+
+    function decrypt(btn) {
+        const key = document.getElementById('master-key').value;
+        const cipher = document.getElementById('cipher-text').value;
+        
+        if(!key || !cipher) return showToast("Falta clave o código");
+
+        try {
+            const bytes = CryptoJS.AES.decrypt(cipher, key);
+            const originalText = bytes.toString(CryptoJS.enc.Utf8);
+            
+            if(!originalText) throw new Error();
+            
+            document.getElementById('plain-text').value = originalText;
+            if(btn) animateBtn(btn);
+            showToast("Mensaje descifrado");
+        } catch (e) {
+            showToast("ERROR: Clave incorrecta o datos corruptos");
+        }
+    }
+</script>

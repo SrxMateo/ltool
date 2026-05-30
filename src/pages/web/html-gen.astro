@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="HTML Boilerplate Hub" suite="web" activeTool="html-gen">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>HTML5 Boilerplate Hub</h1>
+            <p>Generador industrial de plantillas base para proyectos web. Crea la estructura fundamental de tus archivos index.html con todas las etiquetas meta, enlaces a fuentes y scripts esenciales configurados correctamente.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Maquetación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el título de la página y el lenguaje principal.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Activa las librerías comunes (FontAwesome, Google Fonts) según necesites.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará un código limpio y optimizado para SEO.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2.5rem;">
+            <div class="card">
+                <h3 style="color:#fff; margin-bottom:1.5rem; font-size:1.1rem;">Configuración de Estructura</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Título del Proyecto</label>
+                    <input type="text" id="html-title" oninput="genHTML()" value="Mi Proyecto Elite" class="p-input" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label class="p-label">Librerías Externas</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <label class="custom-check">
+                            <input type="checkbox" id="inc-fa" checked onchange="genHTML()" /> FontAwesome 6.5
+                        </label>
+                        <label class="custom-check">
+                            <input type="checkbox" id="inc-tw" onchange="genHTML()" /> Tailwind CSS CDN
+                        </label>
+                        <label class="custom-check">
+                            <input type="checkbox" id="inc-viewport" checked onchange="genHTML()" /> Meta Viewport (Mobile)
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="genHTML(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                    Actualizar Boilerplate <i class="fa-solid fa-sync"></i>
+                </button>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Código HTML5</label>
+                    <button onclick="copyTo('html-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="html-output" readonly style="width: 100%; height: 450px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.5; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genHTML() {
+        const title = document.getElementById('html-title').value;
+        const fa = document.getElementById('inc-fa').checked;
+        const tw = document.getElementById('inc-tw').checked;
+        const vp = document.getElementById('inc-viewport').checked;
+
+        let res = `<!DOCTYPE html>\n<html lang="es">\n<head>\n    <meta charset="UTF-8">\n`;
+        if(vp) res += `    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n`;
+        res += `    <title>${title}</title>\n\n`;
+        
+        if(fa) res += `    <!-- FontAwesome -->\n    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">\n\n`;
+        if(tw) res += `    <!-- Tailwind CSS -->\n    <script src="https://cdn.tailwindcss.com"><\/script>\n\n`;
+        
+        res += `    <style>\n        body { font-family: sans-serif; margin: 0; padding: 20px; }\n    </style>\n</head>\n<body>\n\n    <h1>${title} cargado con éxito</h1>\n\n</body>\n</html>`;
+
+        document.getElementById('html-output').value = res;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Estructura HTML copiada");
+    }
+
+    // Init
+    genHTML();
+</script>

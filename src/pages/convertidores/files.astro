@@ -1,0 +1,205 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Universal File Lab Elite" suite="convertidores" activeTool="files">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Elite File Lab & Universal Forge</h1>
+            <p>Estación de procesamiento masivo para documentos. Ingeniería local avanzada para transformar archivos PDF, Word, Excel, Texto e Imágenes. Tus datos nunca salen de este terminal, garantizando seguridad industrial.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operaciones Multipropósito</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>PDF/Word:</strong> Extrae texto puro o transforma páginas en imágenes de alta resolución.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>EXCEL (XLSX):</strong> Sincroniza tus tablas con formatos JSON/CSV para bases de datos.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>TEXTO/IMAGEN:</strong> Encapsula contenidos en archivos PDF profesionales al instante.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto; text-align: center;">
+            <div id="universal-drop-zone" style="border: 2px dashed var(--p-accent); padding: 4rem; border-radius: 30px; transition: 0.3s; cursor: pointer; background: rgba(0,0,0,0.2);">
+                <i class="fa-solid fa-file-export" style="font-size: 3.5rem; color: var(--p-accent); margin-bottom: 1.5rem;"></i>
+                <h3 style="color: #fff; margin-bottom: 0.5rem;">Cargar Archivo Maestro</h3>
+                <p style="color: var(--p-text-dim); font-size: 0.9rem;">PDF, DOCX, XLSX, TXT, PNG, JPG</p>
+                <input type="file" id="universal-input" style="display: none;" />
+            </div>
+
+            <div id="file-processing-hub" style="display: none; margin-top: 4rem;">
+                <div style="background: var(--p-accent-glow); padding: 2rem; border-radius: 20px; border: 1px solid rgba(34, 211, 238, 0.2); margin-bottom: 3rem;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; color: #fff;">
+                        <i id="type-icon" class="fa-solid fa-file-circle-check" style="font-size: 1.5rem; color: var(--p-accent);"></i>
+                        <span id="file-meta" style="font-weight: 900; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;">-</span>
+                    </div>
+                </div>
+
+                <div id="actions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <!-- Acciones dinámicas -->
+                </div>
+
+                <div id="preview-area" style="margin-top: 4rem; border-top: 1px solid #222; padding-top: 3rem; display: none;">
+                    <h4 style="color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 2rem; letter-spacing: 0.2em;">Previsualización de Ingeniería</h4>
+                    <div id="render-target" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; color: #64748b; font-family: monospace; font-size: 0.8rem; text-align: left; background: #000; padding: 1rem; border-radius: 8px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+<script is:inline>
+    const dropZone = document.getElementById('universal-drop-zone');
+    const input = document.getElementById('universal-input');
+    const hub = document.getElementById('file-processing-hub');
+    const meta = document.getElementById('file-meta');
+    const actions = document.getElementById('actions-grid');
+    const icon = document.getElementById('type-icon');
+    const renderTarget = document.getElementById('render-target');
+    const previewArea = document.getElementById('preview-area');
+
+    let currentFile = null;
+
+    dropZone.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) handleFile(file);
+    });
+
+    async function handleFile(file) {
+        currentFile = file;
+        const ext = file.name.split('.').pop().toLowerCase();
+        meta.innerText = `${file.name.toUpperCase()} (${(file.size / 1024).toFixed(1)} KB)`;
+        hub.style.display = 'block';
+        previewArea.style.display = 'none';
+        actions.innerHTML = '';
+        renderTarget.innerHTML = '';
+
+        if (ext === 'pdf') {
+            icon.className = 'fa-solid fa-file-pdf';
+            setupPdfActions();
+        } else if (['docx', 'doc'].includes(ext)) {
+            icon.className = 'fa-solid fa-file-word';
+            setupWordActions();
+        } else if (['xlsx', 'xls', 'csv'].includes(ext)) {
+            icon.className = 'fa-solid fa-file-excel';
+            setupExcelActions();
+        } else if (ext === 'txt') {
+            icon.className = 'fa-solid fa-file-lines';
+            setupTxtActions();
+        } else if (['png', 'jpg', 'jpeg', 'webp'].includes(ext)) {
+            icon.className = 'fa-solid fa-image';
+            setupImageActions();
+        } else {
+            icon.className = 'fa-solid fa-file-circle-question';
+            showToast("Formato no reconocido.");
+        }
+    }
+
+    function setupPdfActions() {
+        addAction('Extraer Imágenes', 'fa-images', async (btn) => {
+            const pdfjsLib = window['pdfjs-dist/build/pdf'];
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const arrayBuffer = await currentFile.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            showToast("Procesando PDF...");
+            for(let i=1; i<=pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({ scale: 2 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                downloadLink(canvas.toDataURL(), `pagina-${i}.png`);
+            }
+            if(btn) animateBtn(btn);
+        });
+        addAction('PDF a Texto', 'fa-file-lines', async (btn) => {
+            const pdfjsLib = window['pdfjs-dist/build/pdf'];
+            const arrayBuffer = await currentFile.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            let text = "";
+            for(let i=1; i<=pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map(item => item.str).join(' ') + "\n\n";
+            }
+            saveTxt(text, "texto-pdf.txt", btn);
+        });
+    }
+
+    function setupWordActions() {
+        addAction('Word a Texto', 'fa-file-lines', async (btn) => {
+            const arrayBuffer = await currentFile.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            saveTxt(result.value, "texto-word.txt", btn);
+        });
+        addAction('Word a HTML', 'fa-code', async (btn) => {
+            const arrayBuffer = await currentFile.arrayBuffer();
+            const result = await mammoth.convertToHtml({ arrayBuffer });
+            saveTxt(result.value, "word-render.html", btn);
+        });
+    }
+
+    function setupExcelActions() {
+        addAction('Excel a JSON', 'fa-brackets-curly', async (btn) => {
+            const data = await currentFile.arrayBuffer();
+            const workbook = XLSX.read(data);
+            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            saveTxt(JSON.stringify(jsonData, null, 4), "data.json", btn);
+        });
+    }
+
+    function setupTxtActions() {
+        addAction('Convertir a PDF', 'fa-file-pdf', async (btn) => {
+            const text = await currentFile.text();
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const lines = doc.splitTextToSize(text, 180);
+            doc.text(lines, 10, 10);
+            doc.save("texto.pdf");
+            if(btn) animateBtn(btn);
+            showToast("TXT convertido a PDF");
+        });
+    }
+
+    function setupImageActions() {
+        addAction('Encapsular PDF', 'fa-file-pdf', async (btn) => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                doc.addImage(e.target.result, 'PNG', 10, 10, 180, 160);
+                doc.save("imagen.pdf");
+                if(btn) animateBtn(btn);
+                showToast("Imagen a PDF lista");
+            };
+            reader.readAsDataURL(currentFile);
+        });
+    }
+
+    function addAction(label, iconClass, callback) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-elite btn-primary';
+        btn.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${label}`;
+        btn.onclick = () => callback(btn);
+        actions.appendChild(btn);
+    }
+
+    function saveTxt(text, name, btn) {
+        const blob = new Blob([text], { type: 'text/plain' });
+        downloadLink(URL.createObjectURL(blob), name);
+        if(btn) animateBtn(btn);
+        showToast("Archivo generado");
+    }
+
+    function downloadLink(url, name) {
+        const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    }
+</script>

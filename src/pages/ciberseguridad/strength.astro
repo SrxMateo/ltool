@@ -1,0 +1,109 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Password Strength Elite" suite="ciberseguridad" activeTool="strength">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Password Strength Analyzer</h1>
+            <p>Unidad de auditoría para la fortaleza de credenciales. Analiza la entropía, patrones repetitivos y complejidad de tus contraseñas para prevenir ataques de fuerza bruta y diccionarios.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Seguridad</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Escribe la contraseña que deseas auditar.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema evaluará longitud, variedad de caracteres y seguridad estimada.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Nunca guardamos tus contraseñas; el análisis es 100% local en tu navegador.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Contraseña a Auditar</label>
+                <div style="position: relative;">
+                    <input type="password" id="pass-input" oninput="analyze()" placeholder="Introduce tu clave..." style="width: 100%; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.2rem; color: #fff; font-weight: 700; outline: none; font-size: 1.2rem;" />
+                    <button onclick="toggleVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
+                </div>
+            </div>
+
+            <div id="strength-meter" style="height: 8px; background: #111; border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
+                <div id="strength-bar" style="width: 0%; height: 100%; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <span id="strength-text" style="font-weight: 900; font-size: 0.8rem; text-transform: uppercase; color: #444;">Esperando entrada...</span>
+                <span id="entropy-val" style="color: var(--p-text-dim); font-family: monospace; font-size: 0.8rem;">0.00 bits</span>
+            </div>
+
+            <div class="card" style="padding: 1.5rem; background: rgba(0,0,0,0.4); border-color: #222;">
+                <h4 style="font-size: 0.7rem; color: #fff; text-transform: uppercase; margin-bottom: 1rem;">Checklist de Ingeniería</h4>
+                <ul id="checklist" style="list-style: none; padding: 0;">
+                    <li id="check-len" style="color: #444; font-size: 0.85rem; margin-bottom: 5px;"><i class="fa-solid fa-circle-xmark"></i> Mínimo 12 caracteres</li>
+                    <li id="check-upper" style="color: #444; font-size: 0.85rem; margin-bottom: 5px;"><i class="fa-solid fa-circle-xmark"></i> Incluye Mayúsculas</li>
+                    <li id="check-num" style="color: #444; font-size: 0.85rem; margin-bottom: 5px;"><i class="fa-solid fa-circle-xmark"></i> Incluye Números</li>
+                    <li id="check-sym" style="color: #444; font-size: 0.85rem; margin-bottom: 5px;"><i class="fa-solid fa-circle-xmark"></i> Incluye Símbolos</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function toggleVisibility() {
+        const input = document.getElementById('pass-input');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function analyze() {
+        const pass = document.getElementById('pass-input').value;
+        const bar = document.getElementById('strength-bar');
+        const text = document.getElementById('strength-text');
+        const entropyEl = document.getElementById('entropy-val');
+
+        if(!pass) {
+            bar.style.width = '0%';
+            text.innerText = "Esperando entrada...";
+            text.style.color = "#444";
+            entropyEl.innerText = "0.00 bits";
+            return;
+        }
+
+        let score = 0;
+        if (pass.length >= 8) score++;
+        if (pass.length >= 12) score++;
+        if (/[A-Z]/.test(pass)) score++;
+        if (/[0-9]/.test(pass)) score++;
+        if (/[^A-Za-z0-9]/.test(pass)) score++;
+
+        const colors = ['#ef4444', '#f97316', '#fbbf24', '#a3e635', '#22c55e'];
+        const labels = ['MUY DÉBIL', 'DÉBIL', 'MODERADA', 'FUERTE', 'ELITE'];
+        
+        const finalScore = Math.min(score, 4);
+        bar.style.width = ((finalScore + 1) * 20) + '%';
+        bar.style.background = colors[finalScore];
+        text.innerText = labels[finalScore];
+        text.style.color = colors[finalScore];
+
+        // Entropía básica: log2(charset^length)
+        let charset = 0;
+        if (/[a-z]/.test(pass)) charset += 26;
+        if (/[A-Z]/.test(pass)) charset += 26;
+        if (/[0-9]/.test(pass)) charset += 10;
+        if (/[^A-Za-z0-9]/.test(pass)) charset += 32;
+        const entropy = Math.log2(Math.pow(charset, pass.length));
+        entropyEl.innerText = `${entropy.toFixed(2)} bits de entropía`;
+
+        // Update checklist
+        updateCheck('check-len', pass.length >= 12);
+        updateCheck('check-upper', /[A-Z]/.test(pass));
+        updateCheck('check-num', /[0-9]/.test(pass));
+        updateCheck('check-sym', /[^A-Za-z0-9]/.test(pass));
+    }
+
+    function updateCheck(id, ok) {
+        const el = document.getElementById(id);
+        el.style.color = ok ? '#22c55e' : '#64748b';
+        el.innerHTML = `<i class="fa-solid ${ok ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${el.innerText.trim()}`;
+    }
+</script>

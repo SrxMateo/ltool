@@ -1,0 +1,104 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Flexbox Forge Elite" suite="web" activeTool="css-flex">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Advanced Flexbox Forge</h1>
+            <p>Simulador interactivo para el diseño de layouts flexibles. Visualiza instantáneamente cómo interactúan las propiedades de Flexbox (justify, align, gap) y genera el código CSS optimizado para tus contenedores.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Forjado</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ajusta los controles del panel izquierdo para mover los elementos del contenedor.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El área de previsualización muestra el comportamiento real del navegador.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Copia las reglas CSS generadas para implementarlas en tu hoja de estilos.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2.5rem;">
+            <div class="card">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Justify Content</label>
+                    <select id="flex-justify" onchange="updateFlex()" class="p-select" style="width: 100%;">
+                        <option value="flex-start">flex-start</option>
+                        <option value="center">center</option>
+                        <option value="flex-end">flex-end</option>
+                        <option value="space-between">space-between</option>
+                        <option value="space-around">space-around</option>
+                        <option value="space-evenly">space-evenly</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Align Items</label>
+                    <select id="flex-align" onchange="updateFlex()" class="p-select" style="width: 100%;">
+                        <option value="flex-start">flex-start</option>
+                        <option value="center" selected>center</option>
+                        <option value="flex-end">flex-end</option>
+                        <option value="stretch">stretch</option>
+                        <option value="baseline">baseline</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="p-label">Flex Direction</label>
+                    <select id="flex-dir" onchange="updateFlex()" class="p-select" style="width: 100%;">
+                        <option value="row">row</option>
+                        <option value="column">column</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="p-label">Gap (px): <span id="gap-val">20</span></label>
+                    <input type="range" id="flex-gap" min="0" max="100" value="20" oninput="document.getElementById('gap-val').innerText = this.value; updateFlex();" style="width:100%;" />
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div id="flex-preview" style="background: #000; border: 1px solid #333; border-radius: 20px; height: 300px; display: flex; padding: 20px; gap: 20px;">
+                    <div style="width: 60px; height: 60px; background: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900;">1</div>
+                    <div style="width: 60px; height: 60px; background: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900;">2</div>
+                    <div style="width: 60px; height: 60px; background: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900;">3</div>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--p-accent); background: rgba(0,0,0,0.5);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span style="font-weight: 950; color: var(--p-accent); font-size: 0.8rem;">CSS GENERADO</span>
+                        <button onclick="copyTo('flex-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                    <textarea id="flex-output" readonly style="width: 100%; height: 120px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; line-height: 1.6; resize: none;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function updateFlex() {
+        const j = document.getElementById('flex-justify').value;
+        const a = document.getElementById('flex-align').value;
+        const d = document.getElementById('flex-dir').value;
+        const g = document.getElementById('flex-gap').value;
+
+        const preview = document.getElementById('flex-preview');
+        preview.style.justifyContent = j;
+        preview.style.alignItems = a;
+        preview.style.flexDirection = d;
+        preview.style.gap = `${g}px`;
+
+        const code = `.container {\n    display: flex;\n    flex-direction: ${d};\n    justify-content: ${j};\n    align-items: ${a};\n    gap: ${g}px;\n}`;
+        document.getElementById('flex-output').value = code;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Estilos Flexbox copiados");
+    }
+
+    updateFlex();
+</script>

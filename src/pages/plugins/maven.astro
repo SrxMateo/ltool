@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Maven Assist Elite" suite="plugins" activeTool="maven">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>Maven Dependency Assistant</h1>
+            <p>Unidad de gestión de dependencias para proyectos Java. Genera fragmentos XML de <code>pom.xml</code> para las APIs de Minecraft más populares y repositorios esenciales de forma instantánea.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Integración</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Selecciona la API o Librería que deseas añadir a tu proyecto.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema generará el bloque de <code>dependency</code> y el <code>repository</code> necesario.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Copia y pega directamente en tu archivo pom.xml para una compilación exitosa.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 2rem;">
+                <label class="p-label">Seleccionar API / Librería</label>
+                <select id="maven-select" onchange="updateMaven()" class="p-select" style="width: 100%;">
+                    <option value="spigot">Spigot API (1.21)</option>
+                    <option value="paper">Paper API (1.21)</option>
+                    <option value="adventure">Adventure (MiniMessage)</option>
+                    <option value="luckperms">LuckPerms API</option>
+                    <option value="vault">Vault API</option>
+                    <option value="placeholderapi">PlaceholderAPI</option>
+                </select>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Código pom.xml</label>
+                    <button onclick="copyTo('maven-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="maven-output" readonly style="width: 100%; height: 350px; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.85rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    const data = {
+        spigot: `<dependency>\n    <groupId>org.spigotmc</groupId>\n    <artifactId>spigot-api</artifactId>\n    <version>1.21-R0.1-SNAPSHOT</version>\n    <scope>provided</scope>\n</dependency>`,
+        paper: `<dependency>\n    <groupId>io.papermc.paper</groupId>\n    <artifactId>paper-api</artifactId>\n    <version>1.21-R0.1-SNAPSHOT</version>\n    <scope>provided</scope>\n</dependency>`,
+        adventure: `<dependency>\n    <groupId>net.kyori</groupId>\n    <artifactId>adventure-api</artifactId>\n    <version>4.17.0</version>\n</dependency>`,
+        luckperms: `<dependency>\n    <groupId>net.luckperms</groupId>\n    <artifactId>api</artifactId>\n    <version>5.4</version>\n    <scope>provided</scope>\n</dependency>`,
+        vault: `<dependency>\n    <groupId>com.github.MilkBowl</groupId>\n    <artifactId>VaultAPI</artifactId>\n    <version>1.7</version>\n    <scope>provided</scope>\n</dependency>`,
+        placeholderapi: `<dependency>\n    <groupId>me.clip</groupId>\n    <artifactId>placeholderapi</artifactId>\n    <version>2.11.6</version>\n    <scope>provided</scope>\n</dependency>`
+    };
+
+    function updateMaven() {
+        const val = document.getElementById('maven-select').value;
+        document.getElementById('maven-output').value = data[val];
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Snippet Maven copiado");
+    }
+
+    updateMaven();
+</script>

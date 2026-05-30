@@ -1,0 +1,63 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Viewport Calc Elite" suite="web" activeTool="viewport-calc">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Viewport Technical Information</h1>
+            <p>Unidad de telemetría de pantalla en tiempo real. Obtén las dimensiones exactas de tu ventana de navegación (Viewport), la relación de aspecto y la densidad de píxeles para depurar layouts responsivos.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Diagnóstico</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Redimensiona la ventana de tu navegador para ver los cambios instantáneamente.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Compara el ancho contra los Breakpoints comunes (Mobile, Tablet, Desktop).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Útil para asegurar que tus diseños se ven bien en todas las resoluciones.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="card" style="text-align: center;">
+                <label class="p-label">Ancho (Width)</label>
+                <h2 id="vp-width" style="font-size: 3.5rem; font-weight: 950; color: var(--p-accent);">0px</h2>
+            </div>
+            <div class="card" style="text-align: center;">
+                <label class="p-label">Alto (Height)</label>
+                <h2 id="vp-height" style="font-size: 3.5rem; font-weight: 950; color: #fff;">0px</h2>
+            </div>
+            <div class="card" style="text-align: center;">
+                <label class="p-label">Pixel Ratio</label>
+                <h2 id="vp-dpr" style="font-size: 3.5rem; font-weight: 950; color: #fff;">1x</h2>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 3rem; text-align: center; border-left: 5px solid var(--p-accent);">
+            <h3 style="color:#fff; margin-bottom:1rem;">Breakpoint Detectado</h3>
+            <p id="vp-breakpoint" style="font-size: 1.5rem; font-weight: 800; text-transform: uppercase; color: var(--p-accent);">-</p>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function updateVP() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const dpr = window.devicePixelRatio;
+
+        document.getElementById('vp-width').innerText = `${w}px`;
+        document.getElementById('vp-height').innerText = `${h}px`;
+        document.getElementById('vp-dpr').innerText = `${dpr.toFixed(1)}x`;
+
+        let bp = "Desktop (xl)";
+        if(w < 640) bp = "Mobile (sm)";
+        else if(w < 768) bp = "Tablet (md)";
+        else if(w < 1024) bp = "Laptop (lg)";
+
+        document.getElementById('vp-breakpoint').innerText = bp;
+    }
+
+    window.addEventListener('resize', updateVP);
+    updateVP();
+</script>

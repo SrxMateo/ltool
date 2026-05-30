@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="NBT Forge Elite" suite="plugins" activeTool="nbt">
+    <div class="fade-in">
+        <section class="tool-header-info" style="border-left-color: #ec4899;">
+            <h1>NBT Data Forge & Command Hub</h1>
+            <p>Unidad de ingeniería para la manipulación de etiquetas NBT. Genera comandos <code>/give</code> complejos con atributos, encantamientos ocultos y datos personalizados para items de Minecraft.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Forja</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define el material del item y sus etiquetas especiales.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema construirá la sintaxis NBT exacta requerida por el motor del juego.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Ideal para crear items únicos para RPGs o eventos especiales.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+                <input type="text" id="nbt-item" value="diamond_sword" placeholder="item_id" class="p-input" />
+                <textarea id="nbt-tags" placeholder='{display:{Name:"{\"text\":\"Espada Elite\"}"}, Enchantments:[{id:sharpness,lvl:5}]}' style="width: 100%; height: 150px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1rem; color: #fff; font-family: monospace; outline: none;"></textarea>
+            </div>
+
+            <button onclick="genNBT(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Generar Comando NBT <i class="fa-solid fa-hammer"></i>
+            </button>
+            
+            <div class="card" style="margin-top: 3rem; border-top: 4px solid var(--p-accent); background: #000;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Comando /give</label>
+                    <button onclick="copyTo('nbt-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="nbt-output" readonly style="width: 100%; height: 120px; background: transparent; border: none; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; line-height: 1.5; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genNBT(btn) {
+        const item = document.getElementById('nbt-item').value;
+        const tags = document.getElementById('nbt-tags').value;
+        document.getElementById('nbt-output').value = `/give @p ${item}${tags} 1`;
+        if(btn) animateBtn(btn);
+        showToast("Comando NBT forjado");
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Comando copiado");
+    }
+</script>

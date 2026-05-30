@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Data Transformer Elite" suite="convertidores" activeTool="data">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>JSON <> CSV Transformer</h1>
+            <p>Unidad de transformación de estructuras de datos masivas. Intercambia formatos entre objetos JSON y tablas CSV para migración de bases de datos, análisis en hojas de cálculo (Excel) o integración de sistemas.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>JSON a CSV:</strong> Pega un array de objetos JSON para obtener una tabla delimitada por comas.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>CSV a JSON:</strong> Pega datos de Excel para generar un objeto estructurado.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> La primera fila del CSV se utiliza automáticamente como nombres de campo.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+            <!-- JSON PANEL -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; font-weight: 950; color: var(--p-accent); text-transform: uppercase; letter-spacing: 0.1em;">Estructura JSON</label>
+                    <button onclick="copyArea('JsonData', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="JsonData" placeholder='[{"id":1, "nombre": "Mateo"}, {"id":2, "nombre": "Admin"}]' style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: #fff; font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+                <button onclick="jsonToCsv(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%; margin-top: 1.5rem;">
+                    Convertir a CSV <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- CSV PANEL -->
+            <div class="card" style="border-top: 4px solid #fff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; font-weight: 950; color: #fff; text-transform: uppercase; letter-spacing: 0.1em;">Datos CSV (Comma Separated)</label>
+                    <button onclick="copyArea('CsvData', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="CsvData" placeholder='id,nombre&#10;1,Mateo&#10;2,Admin' style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 0.9rem; resize: none;"></textarea>
+                <button onclick="csvToJson(event.currentTarget)" class="btn-elite" style="width: 100%; margin-top: 1.5rem; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333;">
+                    <i class="fa-solid fa-chevron-left"></i> Convertir a JSON
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function jsonToCsv(btn) {
+        const input = document.getElementById('JsonData').value;
+        if(!input) return;
+        try {
+            const arr = JSON.parse(input);
+            if(!Array.isArray(arr)) throw new Error("JSON debe ser una lista []");
+            
+            const keys = Object.keys(arr[0]);
+            const csv = [
+                keys.join(','),
+                ...arr.map(row => keys.map(key => row[key]).join(','))
+            ].join('\n');
+
+            document.getElementById('CsvData').value = csv;
+            if(btn) animateBtn(btn);
+            showToast("Transformación exitosa a CSV");
+        } catch (e) {
+            showToast("ERROR: JSON inválido");
+        }
+    }
+
+    function csvToJson(btn) {
+        const input = document.getElementById('CsvData').value;
+        if(!input) return;
+        try {
+            const lines = input.trim().split('\n');
+            const headers = lines[0].split(',');
+            const result = lines.slice(1).map(line => {
+                const data = line.split(',');
+                return headers.reduce((obj, nextKey, index) => {
+                    obj[nextKey] = data[index];
+                    return obj;
+                }, {});
+            });
+
+            document.getElementById('JsonData').value = JSON.stringify(result, null, 4);
+            if(btn) animateBtn(btn);
+            showToast("Transformación exitosa a JSON");
+        } catch (e) {
+            showToast("ERROR: CSV inválido");
+        }
+    }
+
+    function copyArea(id, btn) {
+        const el = document.getElementById(id);
+        if(!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("Copiado al portapapeles");
+    }
+</script>

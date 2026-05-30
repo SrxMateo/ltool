@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Technical Plans | Elite Intelligence" suite="intelligence" activeTool="plans">
+    <div class="fade-in">
+        <header style="margin-bottom: 3rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+                Technical <span style="color: var(--p-accent);">Plans</span>
+            </h1>
+            <p style="color: var(--p-text-dim); font-size: 1.1rem;">Visualización de planos maestros y diagramas técnicos del ecosistema LumaXCorp.</p>
+        </header>
+
+        <div class="card" style="padding: 3rem; text-align: center; border: 1px dashed var(--p-accent);">
+            <div style="font-size: 4rem; color: var(--p-accent); opacity: 0.3; margin-bottom: 2rem;">
+                <i class="fa-solid fa-diagram-project"></i>
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Módulo en Construcción</h2>
+            <p style="color: var(--p-text-dim); max-width: 500px; margin: 0 auto 2rem;">
+                Estamos digitalizando los planos técnicos de la arquitectura v3.0. Esta sección permitirá ver la estructura de carpetas, flujos de datos y esquemas de red de LumaXCorp.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <div class="badge-lite" style="background: var(--p-accent-glow); color: var(--p-accent); border: 1px solid var(--p-accent);">Planos 2D</div>
+                <div class="badge-lite">Esquemas JSON</div>
+                <div class="badge-lite">Arquitectura V3</div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .badge-lite {
+        padding: 6px 15px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        color: var(--p-text-dim);
+    }
+</style>

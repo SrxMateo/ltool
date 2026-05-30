@@ -1,11 +1,171 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Lobby Central | Hub Navaja Suiza" hideSidebar={true}>
+    <div class="fade-in">
+        <header style="margin-bottom: 4rem; text-align: center;">
+            <div style="display: inline-block; padding: 10px 20px; background: var(--p-accent-glow); border-radius: 50px; color: var(--p-accent); font-size: 0.75rem; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                LumaXCorp Engineering
+            </div>
+            <h1 style="font-size: 4rem; font-weight: 950; letter-spacing: -0.05em; line-height: 1; margin-bottom: 1.5rem;">
+                Navaja <span style="background: linear-gradient(to right, #fbbf24, #f87171); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Suiza</span> Digital
+            </h1>
+            <p style="color: var(--p-text-dim); font-size: 1.2rem; max-width: 700px; margin: 0 auto; font-weight: 500;">
+                Selecciona una suite de herramientas especializadas para potenciar tu flujo de trabajo técnico.
+            </p>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; max-width: 1400px; margin: 0 auto;">
+            
+            <!-- SUITE: GENERADORES (AMARILLO) -->
+            <a href="/generadores" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #fbbf24;">
+                    <div class="suite-icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Generadores Pro</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Unidad de creación algorítmica para IDs, QR, seguridad y contenido simulado.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">UUID</span>
+                        <span class="mini-tag">QR</span>
+                        <span class="mini-tag">PASS</span>
+                        <span class="mini-tag">HASH</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- SUITE: WEB FORGE (ROJO CLARO) -->
+            <a href="/web" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #f87171;">
+                    <div class="suite-icon" style="background: rgba(248, 113, 113, 0.1); color: #f87171;">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Web Forge</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Unidad de ingeniería web para arquitectura HTML, CSS, JS y optimización SEO.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">HTML</span>
+                        <span class="mini-tag">CSS</span>
+                        <span class="mini-tag">JS</span>
+                        <span class="mini-tag">SEO</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- SUITE: CONVERTIDORES (CELESTE) -->
+            <a href="/convertidores" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #22d3ee;">
+                    <div class="suite-icon" style="background: rgba(34, 211, 238, 0.1); color: #22d3ee;">
+                        <i class="fa-solid fa-rotate"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Convertidores Elite</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Unidad de transformación de formatos, bases numéricas y archivos universales.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">PDF</span>
+                        <span class="mini-tag">EXCEL</span>
+                        <span class="mini-tag">WORD</span>
+                        <span class="mini-tag">IMAGE</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- SUITE: CIBERSEGURIDAD (VERDE CLARO) -->
+            <a href="/ciberseguridad" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #4ade80;">
+                    <div class="suite-icon" style="background: rgba(74, 222, 128, 0.1); color: #4ade80;">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Ciberseguridad</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Unidad de auditoría, entropía de claves y análisis de integridad criptográfica.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">STRENGTH</span>
+                        <span class="mini-tag">JWT</span>
+                        <span class="mini-tag">HASH</span>
+                        <span class="mini-tag">SSL</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- SUITE: NETWORK HUB (LILA) -->
+            <a href="/network" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #c084fc;">
+                    <div class="suite-icon" style="background: rgba(192, 132, 252, 0.1); color: #c084fc;">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Network Hub</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Herramientas de telemetría DNS, cálculo de subredes y diagnóstico de red.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">DNS</span>
+                        <span class="mini-tag">IP</span>
+                        <span class="mini-tag">PORTS</span>
+                        <span class="mini-tag">HEADERS</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- SUITE: PLUGIN HUB (ROSA) -->
+            <a href="/plugins" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #ec4899;">
+                    <div class="suite-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Plugin Hub</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Desarrollo avanzado de plugins, generadores de manifiestos y mapeo de IDs.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">YML</span>
+                        <span class="mini-tag">MAVEN</span>
+                        <span class="mini-tag">ADVENTURE</span>
+                        <span class="mini-tag">MAPPING</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- SUITE: ELITE INTELLIGENCE (GRIS ACERO) -->
+            <a href="/intelligence" style="text-decoration: none;" class="suite-card">
+                <div class="card" style="height: 100%; border-bottom: 4px solid #94a3b8;">
+                    <div class="suite-icon" style="background: rgba(148, 163, 184, 0.1); color: #94a3b8;">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 1rem; color: #fff;">Elite Intelligence</h2>
+                    <p style="color: var(--p-text-dim); font-size: 0.95rem; margin-bottom: 2rem;">Unidad de gestión de planos técnicos, plantillas maestras y baúl de código puro.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="mini-tag">PLANS</span>
+                        <span class="mini-tag">MASTER</span>
+                        <span class="mini-tag">VAULT</span>
+                        <span class="mini-tag">AI PROMPT</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
 </Layout>
+
+<style is:global>
+    .suite-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+    }
+    .mini-tag {
+        font-size: 0.6rem;
+        font-weight: 900;
+        padding: 4px 10px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 6px;
+        color: var(--p-text-dim);
+        letter-spacing: 0.05em;
+    }
+    .suite-card:hover .card {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
+        border-color: #fff !important;
+    }
+</style>

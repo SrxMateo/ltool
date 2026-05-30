@@ -1,0 +1,68 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const toolStats = [
+    { name: 'Binary Forge', desc: 'Conversión entre Decimal, Binario, Hex y Octal.', icon: 'fa-microchip', href: '/convertidores/binary' },
+    { name: 'JSON <> CSV', desc: 'Transformador de estructuras de datos masivas.', icon: 'fa-file-csv', href: '/convertidores/json-csv' },
+    { name: 'Markdown Pro', desc: 'Conversor instantáneo de MD a HTML limpio.', icon: 'fa-brands fa-markdown', href: '/convertidores/markdown' },
+    { name: 'Unit Master', desc: 'Conversiones físicas: Longitud, Masa, Temp.', icon: 'fa-ruler-combined', href: '/convertidores/units-pro' },
+    { name: 'Currency Hub', desc: 'Conversor de divisas globales en tiempo real.', icon: 'fa-coins', href: '/convertidores/currency' },
+    { name: 'Image Master', desc: 'Conversor y optimizador de imágenes local.', icon: 'fa-file-image', href: '/convertidores/image' },
+    { name: 'File Forge', desc: 'Procesamiento de PDF y extracción de datos.', icon: 'fa-file-pdf', href: '/convertidores/files' },
+];
+---
+
+<Layout title="Dashboard Convertidores" suite="convertidores" activeTool="dashboard">
+    <div class="fade-in">
+        <header style="margin-bottom: 4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -0.04em; margin-bottom: 0.75rem;">
+                        Panel de <span style="color: var(--p-accent);">Convertidores</span>
+                    </h1>
+                    <p style="color: var(--p-text-dim); font-size: 1.2rem; max-width: 700px;">
+                        Unidad central de transformación de datos. Herramientas diseñadas para la interoperabilidad técnica y optimización de recursos.
+                    </p>
+                </div>
+                <a href="/" class="btn-elite" style="background: rgba(255,255,255,0.05); color: #fff; font-size: 0.8rem; border: 1px solid var(--p-border);">
+                    <i class="fa-solid fa-arrow-left"></i> Hub Principal
+                </a>
+            </div>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            {toolStats.map(tool => (
+                <a href={tool.href} style="text-decoration: none;">
+                    <div class="card" style="border-bottom: 2px solid var(--p-accent); height: 100%;">
+                        <div style="width: 45px; height: 45px; background: var(--p-accent-glow); color: var(--p-accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1.5rem;">
+                            <i class={`fa-solid ${tool.icon}`}></i>
+                        </div>
+                        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff;">{tool.name}</h3>
+                        <p style="color: var(--p-text-dim); font-size: 0.9rem; line-height: 1.5;">{tool.desc}</p>
+                    </div>
+                </a>
+            ))}
+        </div>
+
+        <section style="margin-top: 5rem; padding: 3.5rem; background: linear-gradient(135deg, var(--p-accent-glow) 0%, transparent 100%); border-radius: var(--radius-xl); border: 1px solid var(--p-border); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -50px; right: -50px; font-size: 15rem; color: var(--p-accent-glow); transform: rotate(-15deg); pointer-events: none;">
+                <i class="fa-solid fa-rotate"></i>
+            </div>
+            <h2 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: #fff;">Estandarización de Datos</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div>
+                    <h4 style="color: var(--p-accent); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">Privacidad Total</h4>
+                    <p style="color: var(--p-text-dim); font-size: 0.9rem;">Todas las transformaciones se realizan localmente en tu CPU. Ningún dato sale de tu navegador.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--p-accent); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">Alta Velocidad</h4>
+                    <p style="color: var(--p-text-dim); font-size: 0.9rem;">Algoritmos optimizados para procesamiento instantáneo de archivos y cadenas de texto.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--p-accent); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">Cross-Platform</h4>
+                    <p style="color: var(--p-text-dim); font-size: 0.9rem;">Formatos compatibles con Linux, Windows, macOS y entornos de desarrollo móvil.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</Layout>

@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Robots Guard Elite" suite="ciberseguridad" activeTool="robots">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>Robots Guard & Crawler Control</h1>
+            <p>Unidad de configuración para el control de rastreadores web. Define qué partes de tu servidor son accesibles para Google, Bing o bots maliciosos. Protege tus directorios administrativos y reduce el consumo de ancho de banda innecesario.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Blindaje Index</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Disallow:</strong> Bloquea carpetas sensibles como <code>/admin</code> o <code>/db</code>.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> <strong>Sitemap:</strong> Indica a los buscadores dónde está tu mapa del sitio.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Guarda el resultado como <code>robots.txt</code> en la raíz de tu servidor.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="card">
+                <h3 style="color:#fff; margin-bottom:1.5rem; font-size:1.1rem;">Parámetros del Bot</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.5rem;">User-Agent (Buscador)</label>
+                    <input type="text" id="agent" value="*" oninput="genRobots()" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #fff; font-weight: 800;" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.5rem;">Directorios Bloqueados (Línea por línea)</label>
+                    <textarea id="disallowed" oninput="genRobots()" style="width: 100%; height: 100px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #fff; font-family: monospace; outline: none;">/admin
+/api
+/config</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.5rem;">URL del Sitemap</label>
+                    <input type="text" id="sitemap" placeholder="https://tu-web.com/sitemap.xml" oninput="genRobots()" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #fff; font-weight: 800;" />
+                </div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid var(--p-accent);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <label style="font-size: 0.75rem; font-weight: 900; color: var(--p-accent); text-transform: uppercase;">Archivo robots.txt</label>
+                    <button onclick="copyTo('robots-output', event.currentTarget)" class="btn-copy-mini"><i class="fa-solid fa-copy"></i></button>
+                </div>
+                <textarea id="robots-output" readonly style="width: 100%; height: 300px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.5rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; outline: none; font-size: 1rem; line-height: 1.6; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function genRobots() {
+        const agent = document.getElementById('agent').value;
+        const disallowed = document.getElementById('disallowed').value.split('\n').filter(l => l.trim());
+        const sitemap = document.getElementById('sitemap').value;
+
+        let res = `User-agent: ${agent}\n`;
+        disallowed.forEach(path => {
+            res += `Disallow: ${path.trim()}\n`;
+        });
+
+        if(sitemap) {
+            res += `\nSitemap: ${sitemap}\n`;
+        }
+        
+        document.getElementById('robots-output').value = res;
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("robots.txt copiado");
+    }
+
+    // Init
+    genRobots();
+</script>

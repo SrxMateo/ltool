@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="DNS Lookout Elite" suite="network" activeTool="dns">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>DNS Lookout & Domain Analyzer</h1>
+            <p>Unidad de telemetría para la consulta de registros DNS. Analiza la configuración de dominios para verificar apuntamientos A, registros de correo MX y validaciones TXT.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Ingresa el dominio sin protocolo (ej: lumax.lat).</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> El sistema consultará los registros públicos globales.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Utiliza esta herramienta para verificar si tus cambios de DNS ya se han propagado.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 900; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 1rem;">Dominio a Consultar</label>
+                <input type="text" id="dns-input" placeholder="ej: google.com o lumax.lat" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 12px; padding: 1.2rem; color: #fff; font-weight: 700; text-align: center; outline: none; font-size: 1.2rem;" />
+            </div>
+
+            <button onclick="checkDNS(event.currentTarget)" class="btn-elite btn-primary" style="width: 100%;">
+                Analizar Registros DNS <i class="fa-solid fa-search"></i>
+            </button>
+            
+            <div id="dns-results" style="margin-top: 3rem; display: none; text-align: left;">
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid #222; border-radius: 16px; padding: 2rem;">
+                    <pre id="dns-output" style="color: var(--p-accent); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; white-space: pre-wrap;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    async function checkDNS(btn) {
+        const domain = document.getElementById('dns-input').value.trim();
+        if(!domain) return;
+
+        const output = document.getElementById('dns-output');
+        const results = document.getElementById('dns-results');
+        
+        output.innerText = "Consultando registros globales...";
+        results.style.display = 'block';
+
+        try {
+            // Usando Cloudflare DNS JSON API
+            const types = ['A', 'AAAA', 'MX', 'TXT', 'NS', 'CNAME'];
+            let fullResult = "";
+
+            for(const type of types) {
+                const res = await fetch(`https://cloudflare-dns.com/query?name=${domain}&type=${type}`, {
+                    headers: { 'accept': 'application/dns-json' }
+                });
+                const data = await res.json();
+                
+                fullResult += `[ REGISTRO ${type} ]\n`;
+                if(data.Answer) {
+                    data.Answer.forEach(ans => {
+                        fullResult += `> ${ans.data}\n`;
+                    });
+                } else {
+                    fullResult += `(No se encontraron registros)\n`;
+                }
+                fullResult += `\n`;
+            }
+
+            output.innerText = fullResult;
+            if(btn) animateBtn(btn);
+            showToast("Análisis DNS completado");
+        } catch (e) {
+            output.innerText = "Error al conectar con la red de telemetría.";
+        }
+    }
+</script>

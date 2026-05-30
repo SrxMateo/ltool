@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="UUID v4 Hub Elite" activeTool="uuid">
+    <div class="fade-in">
+        <section class="tool-header-info">
+            <h1>UUID v4 Generator</h1>
+            <p>Unidad de generación de Identificadores Únicos Universales (UUID) versión 4. Utiliza entropía criptográfica para asegurar que cada clave generada sea única en el universo conocido.</p>
+            
+            <div class="guide-box">
+                <h4><i class="fa-solid fa-circle-info"></i> Manual de Operación</h4>
+                <ul>
+                    <li><li><i class="fa-solid fa-check"></i> Define la cantidad de IDs que necesitas generar simultáneamente.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Presiona el botón amarillo para iniciar la secuencia algorítmica.</li></li>
+                    <li><li><i class="fa-solid fa-check"></i> Usa el icono de copia rápida para llevarte todos los resultados.</li></li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div style="display: flex; gap: 2rem; align-items: center; margin-bottom: 2.5rem; background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--p-border);">
+                <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 950; color: var(--p-text-dim); text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.1em;">Cantidad a Generar</label>
+                    <input type="number" id="UuidCount" value="5" min="1" max="100" style="width: 100%; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #fff; font-weight: 800; outline: none; font-size: 1.1rem;" />
+                </div>
+                <button onclick="generateMassiveUUIDs(event.currentTarget)" class="btn-elite btn-primary" style="height: 55px; padding-inline: 2.5rem;">
+                    Generar Lote UUID <i class="fa-solid fa-bolt"></i>
+                </button>
+            </div>
+
+            <div style="position: relative;">
+                <textarea id="UuidOutput" readonly style="width: 100%; height: 350px; background: #000; border: 1px solid #333; border-radius: 12px; padding: 2rem; color: var(--p-accent); font-family: 'JetBrains Mono', monospace; font-size: 1rem; outline: none; line-height: 1.8; resize: none;"></textarea>
+                <button onclick="copyTo('UuidOutput', event.currentTarget)" style="position: absolute; right: 20px; top: 20px; background: rgba(255,255,255,0.05); border: 1px solid #444; color: #fff; padding: 10px 15px; border-radius: 10px; cursor: pointer; transition: 0.3s;">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function generateMassiveUUIDs(btn) {
+        const count = document.getElementById('UuidCount').value;
+        let result = "";
+        for (let i = 0; i < count; i++) {
+            result += uuidv4() + "\n";
+        }
+        document.getElementById('UuidOutput').value = result.trim();
+        if(btn) animateBtn(btn);
+        showToast("Lote de UUIDs generado");
+    }
+
+    function copyTo(id, btn) {
+        const el = document.getElementById(id);
+        if (!el.value) return;
+        navigator.clipboard.writeText(el.value);
+        if(btn) animateBtn(btn);
+        showToast("UUIDs copiados al portapapeles");
+    }
+
+    // Init
+    generateMassiveUUIDs();
+</script>
